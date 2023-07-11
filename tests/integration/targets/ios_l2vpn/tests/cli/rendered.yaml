@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: Start l2vpn rendered integration tests ansible_connection={{ ansible_connection }}
+
+- name: Render the commands for provided l2vpn configuration
+  register: result
+  cisco.ios.ios_l2vpn:
+    config: "{{ gathered['config'] }}"
+    state: rendered
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.rendered|symmetric_difference(rendered.commands) == []

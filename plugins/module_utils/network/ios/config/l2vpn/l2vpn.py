@@ -22,6 +22,7 @@ from copy import deepcopy
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
+    get_from_dict,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -52,6 +53,8 @@ class L2vpn(ResourceModule):
             "l2vpn.logging.redundancy",
             "l2vpn.logging.vc_state",
             "l2vpn.router_id",
+            "l2vpn.redundancy_predictive_enabled",
+            "l2vpn.pseudowire_group_status",
             "l2vpn.shutdown",
         ]
 
@@ -89,7 +92,7 @@ class L2vpn(ResourceModule):
         for x in self.linear_parsers:
             self.compare([x], want=want, have=have)
         if cmd_len < len(self.commands):
-            self.commands.prepend("l2vpn")
+            self.commands.insert(cmd_len,"l2vpn")
             self.commands.append("exit")
                         
     def _dict_copy_deleted(self, want, have, x=""):

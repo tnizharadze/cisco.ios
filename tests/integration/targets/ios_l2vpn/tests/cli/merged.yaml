@@ -1,0 +1,52 @@
+---
+- ansible.builtin.debug:
+    msg: START l2vpn merged state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge provided l2vpn configuration with device configuration
+      register: result
+      cisco.ios.ios_l2vpn:
+        config:
+          l2vpn:
+            logging:
+              pseudowire_status: true
+              redundancy: true
+              vc_state: true
+            redundancy_predictive_enabled: true
+        state: merged
+
+    - name: Test 1. Merge provided l2vpn configuration with device configuration
+      register: result
+      cisco.ios.ios_l2vpn: &id001
+        config:
+          l2vpn:
+            redundancy_predictive_enabled: false
+            pseudowire_group_status: true
+            router_id: "4.4.4.4"
+            shutdown: true
+        state: merged
+
+    - name: Assert that correct set of l2vpn commands were generated
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+
+    - name: Test 2. Merge provided l2vpn configuration with device configuration (idempotent)
+      register: result
+      cisco.ios.ios_l2vpn: *id001
+
+    - name: Assert that the previous task has no changes made
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

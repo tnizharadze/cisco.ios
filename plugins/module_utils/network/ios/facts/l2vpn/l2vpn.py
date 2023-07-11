@@ -56,12 +56,15 @@ class L2vpnFacts(object):
 
         # parse native config using the L2vpn template
         l2vpn_parser = L2vpnTemplate(lines=data.splitlines(), module=self._module)
-        objs = list(l2vpn_parser.parse().values())
+
+        objs = l2vpn_parser.parse()
+#        raise Exception(objs)
+    
         params = utils.remove_empties(
             l2vpn_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
         )
         
-        facts['l2vpn'] = params['config']
+        facts['l2vpn'] = params['config'] if 'config' in params else {} 
 
         ansible_facts['ansible_network_resources'].pop('l2vpn', None)
         ansible_facts['ansible_network_resources'].update(facts)

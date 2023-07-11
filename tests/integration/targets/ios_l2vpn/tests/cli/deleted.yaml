@@ -1,0 +1,38 @@
+---
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for ios_l2vpn ansible_connection={{ ansible_connection }}
+
+- block:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
+
+    - name: Delete provided spanning tree configuration
+      register: result
+      cisco.ios.ios_l2vpn: &id001
+        config:
+          l2vpn:
+            logging:
+              redundancy: false
+              vc_state: true
+            redundancy_predictive_enabled: true
+            pseudowire_group_status: false
+            router_id: "4.4.4.4"
+            shutdown: true
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Delete provided l2vpn configuration (idempotent)
+      register: result
+      cisco.ios.ios_l2vpn: *id001
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

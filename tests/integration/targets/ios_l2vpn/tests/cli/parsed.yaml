@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: START l2vpn parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse the commands for provided configuration
+  register: result
+  cisco.ios.ios_l2vpn:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - gathered['config'] == result['parsed']

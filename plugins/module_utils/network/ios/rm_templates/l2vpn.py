@@ -77,6 +77,36 @@ class L2vpnTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "l2vpn.redundancy_predictive_enabled",
+            "getval": re.compile(
+                r"""
+                \sredundancy\spredictive\s(?P<redundancy_predictive_enabled>enabled)
+                \s*
+                $""", re.VERBOSE,
+            ),
+            "setval": "redundancy predictive enabled",
+            "result": {
+                "l2vpn": {
+                    "redundancy_predictive_enabled": "{{ not not redundancy_predictive_enabled }}", 
+                },
+            },
+        },
+        {
+            "name": "l2vpn.pseudowire_group_status",
+            "getval": re.compile(
+                r"""
+                \spseudowire\sgroup\s(?P<pseudowire_group_status>status)
+                \s*
+                $""", re.VERBOSE,
+            ),
+            "setval": "pseudowire group status",
+            "result": {
+                "l2vpn": {
+                    "pseudowire_group_status": "{{ not not pseudowire_group_status }}", 
+                },
+            },
+        },
+        {
             "name": "l2vpn.router_id",
             "getval": re.compile(
                 r"""
@@ -84,10 +114,10 @@ class L2vpnTemplate(NetworkTemplate):
                 \s*
                 $""", re.VERBOSE,
             ),
-            "setval": "router-id {{ router_id }}",
+            "setval": "router-id {{ l2vpn.router_id }}",
             "result": {
                 "l2vpn": {
-                    "router_id": "{{ not not router_id }}", 
+                    "router_id": "{{ router_id }}", 
                 },
             },
         },

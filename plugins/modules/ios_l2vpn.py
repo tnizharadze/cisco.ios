@@ -45,7 +45,7 @@ options:
                 description: Enable EVPN-VPWS for logging
                 type: bool
           redundancy_predictive_enabled:
-            description: Configuring Predictive Switchover 
+            description: Configuring Predictive Switchover
             type: bool
           pseudowire_group_status:
             description: Sends pseudowire group status messages.
@@ -54,7 +54,7 @@ options:
             description: Set global router-id
             type: str
           shutdown:
-            description: Disable all L2VPN 
+            description: Disable all L2VPN
             type: bool
   running_config:
     description:
@@ -76,7 +76,7 @@ options:
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config
-        | section ^l2vpn) executed on device. For state I(parsed) active
+        | section ^l2vpn$) executed on device. For state I(parsed) active
         connection to remote host is not required.
     type: str
     choices:
@@ -113,17 +113,21 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - l2vpn
+    - logging pseudowire status
+    - router-id 4.4.4.4
+    - shutdown
+    - exit
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - l2vpn
+    - logging pseudowire status
+    - router-id 4.4.4.4
+    - shutdown
+    - exit
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
