@@ -49,13 +49,13 @@ class L2vpn(ResourceModule):
             tmplt=L2vpnTemplate(),
         )
         self.linear_parsers = [
-            "l2vpn.logging.pseudowire_status",
-            "l2vpn.logging.redundancy",
-            "l2vpn.logging.vc_state",
-            "l2vpn.router_id",
-            "l2vpn.redundancy_predictive_enabled",
-            "l2vpn.pseudowire_group_status",
-            "l2vpn.shutdown",
+            "logging.pseudowire_status",
+            "logging.redundancy",
+            "logging.vc_state",
+            "router_id",
+            "redundancy_predictive_enabled",
+            "pseudowire_group_status",
+            "shutdown",
         ]
 
     def execute_module(self):

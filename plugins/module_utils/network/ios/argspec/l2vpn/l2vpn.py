@@ -35,23 +35,18 @@ class L2vpnArgs(object):  # pylint: disable=R0903
         "config": {
             "type": "dict",
             "options": {
-                "l2vpn": {
+                "logging": {
                     "type": "dict",
                     "options": {
-                        "logging": {
-                            "type": "dict",
-                            "options": {
-                                "pseudowire_status": {"type": "bool"},
-                                "redundancy": {"type": "bool"},
-                                "vc_state": {"type": "bool"},
-                            },
-                        },
-                        "redundancy_predictive_enabled": {"type": "bool"},
-                        "pseudowire_group_status": {"type": "bool"},
-                        "router_id": {"type": "str"},
-                        "shutdown": {"type": "bool"},
+                        "pseudowire_status": {"type": "bool"},
+                        "redundancy": {"type": "bool"},
+                        "vc_state": {"type": "bool"},
                     },
-                }
+                },
+                "redundancy_predictive_enabled": {"type": "bool"},
+                "pseudowire_group_status": {"type": "bool"},
+                "router_id": {"type": "str"},
+                "shutdown": {"type": "bool"},
             },
         },
         "running_config": {"type": "str"},

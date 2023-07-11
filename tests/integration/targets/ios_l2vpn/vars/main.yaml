@@ -1,15 +1,14 @@
 ---
 gathered:
   config:
-    l2vpn:
-      logging:
-        pseudowire_status: true
-        redundancy: true
-        vc_state: true
-      redundancy_predictive_enabled: true
-      pseudowire_group_status: true
-      router_id: "4.4.4.4"
-      shutdown: true
+    logging:
+      pseudowire_status: true
+      redundancy: true
+      vc_state: true
+    redundancy_predictive_enabled: true
+    pseudowire_group_status: true
+    router_id: "4.4.4.4"
+    shutdown: true
 rendered:
   commands:
     - "l2vpn"
@@ -30,14 +29,13 @@ merged:
     - "shutdown"
     - "exit"
   after:
-    l2vpn:
-      logging:
-          pseudowire_status: true
-          redundancy: true
-          vc_state: true
-      pseudowire_group_status: true
-      router_id: "4.4.4.4"
-      shutdown: true
+    logging:
+        pseudowire_status: true
+        redundancy: true
+        vc_state: true
+    pseudowire_group_status: true
+    router_id: "4.4.4.4"
+    shutdown: true
 replaced:
   commands:
     - "l2vpn"
@@ -47,12 +45,11 @@ replaced:
     - "no pseudowire group status"
     - "exit"
   after:
-    l2vpn:
-      logging:
-        vc_state: true
-      redundancy_predictive_enabled: true
-      router_id: "5.5.5.5"
-      shutdown: true
+    logging:
+      vc_state: true
+    redundancy_predictive_enabled: true
+    router_id: "5.5.5.5"
+    shutdown: true
 deleted:
   commands:
     - "l2vpn"

@@ -27,35 +27,31 @@ options:
     description: The provided configurations.
     type: dict
     suboptions:
-      l2vpn:
-        description: Base L2 VPN configurations.
+      logging:
+        description: Default Logging configuretion.
         type: dict
         suboptions:
-          logging:
-            description: Default Logging configuretion.
-            type: dict
-            suboptions:
-              pseudowire_status:
-                description: Enable L2VPN Pseudowire logging
-                type: bool
-              redundancy:
-                description: To enable system message log (syslog) reporting of the status redundancy group
-                type: bool
-              vc_state:
-                description: Enable EVPN-VPWS for logging
-                type: bool
-          redundancy_predictive_enabled:
-            description: Configuring Predictive Switchover
+          pseudowire_status:
+            description: Enable L2VPN Pseudowire logging
             type: bool
-          pseudowire_group_status:
-            description: Sends pseudowire group status messages.
+          redundancy:
+            description: To enable system message log (syslog) reporting of the status redundancy group
             type: bool
-          router_id:
-            description: Set global router-id
-            type: str
-          shutdown:
-            description: Disable all L2VPN
+          vc_state:
+            description: Enable EVPN-VPWS for logging
             type: bool
+      redundancy_predictive_enabled:
+        description: Configuring Predictive Switchover
+        type: bool
+      pseudowire_group_status:
+        description: Sends pseudowire group status messages.
+        type: bool
+      router_id:
+        description: Set global router-id
+        type: str
+      shutdown:
+        description: Disable all L2VPN
+        type: bool
   running_config:
     description:
       - This option is used only with state I(parsed).
@@ -90,7 +86,223 @@ options:
 """
 
 EXAMPLES = """
+# Using gathered
 
+# Before state:
+# -------------
+# l2vpn
+#  logging pseudowire status
+#  logging redundancy
+#  logging vc-state
+#  redundancy predictive enabled
+#  pseudowire group status
+#  router-id 4.4.4.4
+#  shutdown
+
+- name: Gather the existing l2vpn running configuration
+  register: result
+  cisco.ios.ios_l2vpn:
+    state: gathered
+
+# Task Output:
+# ------------
+# config:
+#   logging:
+#     pseudowire_status: true
+#     redundancy: true
+#     vc_state: true
+#   redundancy_predictive_enabled: true
+#   pseudowire_group_status: true
+#   router_id: "4.4.4.4"
+#   shutdown: true
+
+# Using parsed
+
+# Before state:
+# -------------
+# cat _parsed.cfg
+# l2vpn
+#  logging pseudowire status
+#  logging redundancy
+#  logging vc-state
+#  redundancy predictive enabled
+#  pseudowire group status
+#  router-id 4.4.4.4
+#  shutdown
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_l2vpn:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+# Task Output:
+# ------------
+# config:
+#   logging:
+#     pseudowire_status: true
+#     redundancy: true
+#     vc_state: true
+#   redundancy_predictive_enabled: true
+#   pseudowire_group_status: true
+#   router_id: "4.4.4.4"
+#   shutdown: true
+
+# Using rendered
+
+- name: Render the commands for provided l2vpn configuration
+  register: result
+  cisco.ios.ios_l2vpn:
+    config:
+      logging:
+        pseudowire_status: true
+        redundancy: true
+        vc_state: true
+      redundancy_predictive_enabled: true
+      pseudowire_group_status: true
+      router_id: "4.4.4.4"
+      shutdown: true
+    state: rendered
+
+# Task Output:
+# ------------
+# commands:
+#   - "l2vpn"
+#   - "logging pseudowire status"
+#   - "logging redundancy"
+#   - "logging vc-state"
+#   - "redundancy predictive enabled"
+#   - "pseudowire group status"
+#   - "router-id 4.4.4.4"
+#   - "shutdown"
+#   - "exit"
+
+# Using merged
+
+# Before state:
+# -------------
+# l2vpn
+#  logging pseudowire status
+#  logging redundancy
+#  logging vc-state
+#  redundancy predictive enabled
+
+- name: Merge provided l2vpn configuration with device configuration
+  register: result
+  cisco.ios.ios_l2vpn:
+    config:
+      redundancy_predictive_enabled: false
+      pseudowire_group_status: true
+      router_id: "4.4.4.4"
+      shutdown: true
+    state: merged
+
+# Task Output:
+# ------------
+# after:
+#   logging:
+#     pseudowire_status: true
+#     redundancy: true
+#     vc_state: true
+#   pseudowire_group_status: true
+#   router_id: "4.4.4.4"
+#   shutdown: true
+#
+# After state:
+# -------------
+# l2vpn
+#  logging pseudowire status
+#  logging redundancy
+#  logging vc-state
+#  redundancy predictive enabled
+#  router-id 4.4.4.4
+#  shutdown
+
+# Using replaced
+
+# Before state:
+# -------------
+# l2vpn
+#  logging pseudowire status
+#  logging redundancy
+#  logging vc-state
+#  redundancy predictive enabled
+#  pseudowire group status
+#  router-id 4.4.4.4
+#  shutdown
+
+- name: Replaced provided l2vpn configuration
+  cisco.ios.ios_l2vpn:
+    config:
+      logging:
+        redundancy: false
+        vc_state: true
+      redundancy_predictive_enabled: true
+      pseudowire_group_status: false
+      router_id: "5.5.5.5"
+      shutdown: true
+    state: replaced
+
+# Task Output:
+# ------------
+# replaced:
+#   commands:
+#     - "l2vpn"
+#     - "no logging pseudowire status"
+#     - "no logging redundancy"
+#     - "router-id 5.5.5.5"
+#     - "no pseudowire group status"
+#     - "exit"
+#
+# After state:
+# -------------
+# l2vpn
+#  logging vc-state
+#  redundancy predictive enabled
+#  router-id 5.5.5.5
+#  shutdown
+
+# Using deleted
+
+# Before state:
+# -------------
+# l2vpn
+#  logging pseudowire status
+#  logging redundancy
+#  logging vc-state
+#  redundancy predictive enabled
+#  pseudowire group status
+#  router-id 4.4.4.4
+#  shutdown
+
+- name: Delete provided spanning tree configuration
+  cisco.ios.ios_l2vpn:
+    config:
+      logging:
+        redundancy: false
+        vc_state: true
+      redundancy_predictive_enabled: true
+      pseudowire_group_status: false
+      router_id: "4.4.4.4"
+      shutdown: true
+    state: deleted
+
+# Task Output:
+# ------------
+# deleted:
+#   commands:
+#     - "l2vpn"
+#     - "no logging vc-state"
+#     - "no router-id 4.4.4.4"
+#     - "no redundancy predictive enabled"
+#     - "no shutdown"
+#     - "exit"
+#
+# After state:
+# -------------
+# l2vpn
+#  logging pseudowire status
+#  logging redundancy
+#  pseudowire group status
 """
 
 RETURN = """

@@ -26,7 +26,7 @@ class L2vpnTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "l2vpn.logging.pseudowire_status",
+            "name": "logging.pseudowire_status",
             "getval": re.compile(
                 r"""
                 \slogging\spseudowire\s(?P<pseudowire_status>status)
@@ -35,15 +35,13 @@ class L2vpnTemplate(NetworkTemplate):
             ),
             "setval": "logging pseudowire status",
             "result": {
-                "l2vpn": {
-                    "logging": {
-                        "pseudowire_status": "{{ not not pseudowire_status }}", 
-                    },
+                "logging": {
+                    "pseudowire_status": "{{ not not pseudowire_status }}", 
                 },
             },
         },
         {
-            "name": "l2vpn.logging.redundancy",
+            "name": "logging.redundancy",
             "getval": re.compile(
                 r"""
                 \slogging\s(?P<redundancy>redundancy)
@@ -52,15 +50,13 @@ class L2vpnTemplate(NetworkTemplate):
             ),
             "setval": "logging redundancy",
             "result": {
-                "l2vpn": {
-                    "logging": {
-                        "redundancy": "{{ not not redundancy }}", 
-                    },
+                "logging": {
+                    "redundancy": "{{ not not redundancy }}", 
                 },
             },
         },
         {
-            "name": "l2vpn.logging.vc_state",
+            "name": "logging.vc_state",
             "getval": re.compile(
                 r"""
                 \slogging\s(?P<vc_state>vc-state)
@@ -69,15 +65,13 @@ class L2vpnTemplate(NetworkTemplate):
             ),
             "setval": "logging vc-state",
             "result": {
-                "l2vpn": {
-                    "logging": {
-                        "vc_state": "{{ not not vc_state }}", 
-                    },
+                "logging": {
+                    "vc_state": "{{ not not vc_state }}", 
                 },
             },
         },
         {
-            "name": "l2vpn.redundancy_predictive_enabled",
+            "name": "redundancy_predictive_enabled",
             "getval": re.compile(
                 r"""
                 \sredundancy\spredictive\s(?P<redundancy_predictive_enabled>enabled)
@@ -86,13 +80,11 @@ class L2vpnTemplate(NetworkTemplate):
             ),
             "setval": "redundancy predictive enabled",
             "result": {
-                "l2vpn": {
-                    "redundancy_predictive_enabled": "{{ not not redundancy_predictive_enabled }}", 
-                },
+                "redundancy_predictive_enabled": "{{ not not redundancy_predictive_enabled }}", 
             },
         },
         {
-            "name": "l2vpn.pseudowire_group_status",
+            "name": "pseudowire_group_status",
             "getval": re.compile(
                 r"""
                 \spseudowire\sgroup\s(?P<pseudowire_group_status>status)
@@ -101,28 +93,24 @@ class L2vpnTemplate(NetworkTemplate):
             ),
             "setval": "pseudowire group status",
             "result": {
-                "l2vpn": {
-                    "pseudowire_group_status": "{{ not not pseudowire_group_status }}", 
-                },
+                "pseudowire_group_status": "{{ not not pseudowire_group_status }}", 
             },
         },
         {
-            "name": "l2vpn.router_id",
+            "name": "router_id",
             "getval": re.compile(
                 r"""
                 \srouter-id\s(?P<router_id>\S+)
                 \s*
                 $""", re.VERBOSE,
             ),
-            "setval": "router-id {{ l2vpn.router_id }}",
+            "setval": "router-id {{ router_id }}",
             "result": {
-                "l2vpn": {
-                    "router_id": "{{ router_id }}", 
-                },
+                "router_id": "{{ router_id }}", 
             },
         },
         {
-            "name": "l2vpn.shutdown",
+            "name": "shutdown",
             "getval": re.compile(
                 r"""
                 \s(?P<shutdown>shutdown)
@@ -131,9 +119,7 @@ class L2vpnTemplate(NetworkTemplate):
             ),
             "setval": "shutdown",
             "result": {
-                "l2vpn": {
-                    "shutdown": "{{ not not shutdown }}", 
-                },
+                "shutdown": "{{ not not shutdown }}", 
             },
         },
     ]

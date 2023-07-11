@@ -9,23 +9,21 @@
       register: result
       cisco.ios.ios_l2vpn:
         config:
-          l2vpn:
-            logging:
-              pseudowire_status: true
-              redundancy: true
-              vc_state: true
-            redundancy_predictive_enabled: true
+          logging:
+            pseudowire_status: true
+            redundancy: true
+            vc_state: true
+          redundancy_predictive_enabled: true
         state: merged
 
     - name: Test 1. Merge provided l2vpn configuration with device configuration
       register: result
       cisco.ios.ios_l2vpn: &id001
         config:
-          l2vpn:
-            redundancy_predictive_enabled: false
-            pseudowire_group_status: true
-            router_id: "4.4.4.4"
-            shutdown: true
+          redundancy_predictive_enabled: false
+          pseudowire_group_status: true
+          router_id: "4.4.4.4"
+          shutdown: true
         state: merged
 
     - name: Assert that correct set of l2vpn commands were generated

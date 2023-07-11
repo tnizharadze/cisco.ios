@@ -65,17 +65,15 @@ class TestIosL2VPNModule(TestIosModule):
             """,
         )
         gathered = {
-            "l2vpn": {
-                "logging": {
-                    "pseudowire_status": True,
-                    "redundancy": True,
-                    "vc_state": True,
-                },
-                "redundancy_predictive_enabled": True,
-                "pseudowire_group_status": True,
-                "router_id": "4.4.4.4",
-                "shutdown": True,
+            "logging": {
+                "pseudowire_status": True,
+                "redundancy": True,
+                "vc_state": True,
             },
+            "redundancy_predictive_enabled": True,
+            "pseudowire_group_status": True,
+            "router_id": "4.4.4.4",
+            "shutdown": True,
         }
         set_module_args(dict(state="gathered"))
         result = self.execute_module(changed=False)
@@ -101,17 +99,15 @@ class TestIosL2VPNModule(TestIosModule):
         )
 
         parsed = {
-            "l2vpn": {
-                "logging": {
-                    "pseudowire_status": True,
-                    "redundancy": True,
-                    "vc_state": True,
-                },
-                "redundancy_predictive_enabled": True,
-                "pseudowire_group_status": True,
-                "router_id": "4.4.4.4",
-                "shutdown": True,
+            "logging": {
+                "pseudowire_status": True,
+                "redundancy": True,
+                "vc_state": True,
             },
+            "redundancy_predictive_enabled": True,
+            "pseudowire_group_status": True,
+            "router_id": "4.4.4.4",
+            "shutdown": True,
         }
 
         result = self.execute_module(changed=False)
@@ -122,17 +118,15 @@ class TestIosL2VPNModule(TestIosModule):
         set_module_args(
             dict(
                 config={
-                    "l2vpn": {
-                        "logging": {
-                            "pseudowire_status": True,
-                            "redundancy": True,
-                            "vc_state": True,
-                        },
-                        "redundancy_predictive_enabled": True,
-                        "pseudowire_group_status": True,
-                        "router_id": "4.4.4.4",
-                        "shutdown": True,
+                    "logging": {
+                        "pseudowire_status": True,
+                        "redundancy": True,
+                        "vc_state": True,
                     },
+                    "redundancy_predictive_enabled": True,
+                    "pseudowire_group_status": True,
+                    "router_id": "4.4.4.4",
+                    "shutdown": True,
                 },
                 state="rendered",
             ),
@@ -164,16 +158,14 @@ class TestIosL2VPNModule(TestIosModule):
         set_module_args(
             dict(
                 config={
-                    "l2vpn": {
-                        "logging": {
-                            "redundancy": False,
-                            "vc_state": True,
-                        },
-                        "redundancy_predictive_enabled": True,
-                        "pseudowire_group_status": False,
-                        "router_id": "4.4.4.4",
-                        "shutdown": True,
+                    "logging": {
+                        "redundancy": False,
+                        "vc_state": True,
                     },
+                    "redundancy_predictive_enabled": True,
+                    "pseudowire_group_status": False,
+                    "router_id": "4.4.4.4",
+                    "shutdown": True,
                 },
                 state="merged",
             ),
@@ -202,16 +194,14 @@ class TestIosL2VPNModule(TestIosModule):
         set_module_args(
             dict(
                 config={
-                    "l2vpn": {
-                        "logging": {
-                            "redundancy": False,
-                            "vc_state": True,
-                        },
-                        "redundancy_predictive_enabled": True,
-                        "pseudowire_group_status": False,
-                        "router_id": "4.4.4.4",
-                        "shutdown": True,
+                    "logging": {
+                        "redundancy": False,
+                        "vc_state": True,
                     },
+                    "redundancy_predictive_enabled": True,
+                    "pseudowire_group_status": False,
+                    "router_id": "4.4.4.4",
+                    "shutdown": True,
                 },
                 state="replaced",
             ),
@@ -243,16 +233,14 @@ class TestIosL2VPNModule(TestIosModule):
         set_module_args(
             dict(
                 config={
-                    "l2vpn": {
-                        "logging": {
-                            "redundancy": False,
-                            "vc_state": True,
-                        },
-                        "redundancy_predictive_enabled": True,
-                        "pseudowire_group_status": False,
-                        "router_id": "4.4.4.4",
-                        "shutdown": True,
+                    "logging": {
+                        "redundancy": False,
+                        "vc_state": True,
                     },
+                    "redundancy_predictive_enabled": True,
+                    "pseudowire_group_status": False,
+                    "router_id": "4.4.4.4",
+                    "shutdown": True,
                 },
                 state="deleted",
             ),

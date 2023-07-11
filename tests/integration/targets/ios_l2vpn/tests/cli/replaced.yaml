@@ -10,14 +10,13 @@
       register: result
       cisco.ios.ios_l2vpn: &id001
         config:
-          l2vpn:
-              logging:
-                  redundancy: false
-                  vc_state: true
-              redundancy_predictive_enabled: true
-              pseudowire_group_status: false
-              router_id: "5.5.5.5"
-              shutdown: true
+          logging:
+            redundancy: false
+            vc_state: true
+          redundancy_predictive_enabled: true
+          pseudowire_group_status: false
+          router_id: "5.5.5.5"
+          shutdown: true
         state: replaced
 
     - name: Assert that before dict is correctly generated
