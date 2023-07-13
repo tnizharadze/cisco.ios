@@ -206,4 +206,6 @@ plugin_routing:
       redirect: cisco.ios.ios_vlans
     vrf:
       redirect: cisco.ios.ios_vrf
+    l2vpn_evpn:
+      redirect: cisco.ios.ios_l2vpn_evpn
 requires_ansible: ">=2.9.10"
