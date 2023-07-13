@@ -1,0 +1,15 @@
+---
+- name: Setup
+  cisco.ios.ios_config:
+    lines: "{{ item.address }}"
+    parents: "{{ item.interface }}"
+  with_items:
+    - interface: "interface Loopback0"
+      address: "ip address 1.1.1.1 255.255.255.255"
+    - interface: "interface Loopback1"
+      address: "ip address 1.1.1.2 255.255.255.255"
+
+- name: Populate ios_l2vpn_evpn configuration
+  cisco.ios.ios_l2vpn_evpn:
+    config: "{{ gathered['config'] }}"
+    state: merged

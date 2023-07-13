@@ -166,6 +166,400 @@ options:
 """
 
 EXAMPLES = """
+# Using gathered
+
+# Before state:
+# -------------
+# l2vpn evpn
+#  logging vpws vc-state
+#  logging peer state
+#  replication-type static
+#  flooding-suppression address-resolution disable
+#  ip duplication limit 234 time 234
+#  mac duplication limit 213 time 123
+#  router-id Loopback0
+#  multihoming aliasing disable
+#  ip local-learning disable
+#  ip local-learning limit per-mac ipv4 345
+#  ip local-learning limit per-mac ipv6 2345
+#  ip local-learning time down 234
+#  ip local-learning time poll 223
+#  ip local-learning time reachable 234
+#  ip local-learning time stale 23
+#  default-gateway advertise
+#  route-target auto vni
+#  multicast advertise
+
+- name: Gather the existing ios_l2vpn_evpn running configuration
+  register: result
+  cisco.ios.ios_l2vpn_evpn:
+    state: gathered
+
+# Task Output:
+# ------------
+# "gathered": {
+#     "default_gateway_advertise": true,
+#     "flooding_suppression_address_resolution_disable": true,
+#     "ip_duplication": {
+#         "limit": 234,
+#         "time": 234
+#     },
+#     "ip_local_learning": {
+#         "disable": true,
+#         "limit_per_mac_ipv4": 345,
+#         "limit_per_mac_ipv6": 2345,
+#         "time": {
+#             "down": 234,
+#             "poll": 223,
+#             "reachable": 234,
+#             "stale": 23
+#         }
+#     },
+#     "logging": {
+#         "peer_state": true,
+#         "vpws_vc_state": true
+#     },
+#     "mac_duplication": {
+#         "limit": 213,
+#         "time": 123
+#     },
+#     "multicast_advertise": true,
+#     "multihoming_aliasing_disable": true,
+#     "replication_type": "static",
+#     "route_target_auto_vni": true,
+#     "router_id": "Loopback0"
+# }
+
+# Using parsed
+
+# Before state:
+# -------------
+# cat _parsed.cfg
+# l2vpn evpn
+#  logging vpws vc-state
+#  logging peer state
+#  replication-type static
+#  flooding-suppression address-resolution disable
+#  ip duplication limit 234 time 234
+#  mac duplication limit 213 time 123
+#  router-id Loopback0
+#  multihoming aliasing disable
+#  ip local-learning disable
+#  ip local-learning limit per-mac ipv4 345
+#  ip local-learning limit per-mac ipv6 2345
+#  ip local-learning time down 234
+#  ip local-learning time poll 223
+#  ip local-learning time reachable 234
+#  ip local-learning time stale 23
+#  default-gateway advertise
+#  route-target auto vni
+#  multicast advertise
+
+- name: Parse the commands for provided configuration
+  register: result
+  cisco.ios.ios_l2vpn_evpn:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+# Task Output:
+# ------------
+# "parsed": {
+#     "default_gateway_advertise": true,
+#     "flooding_suppression_address_resolution_disable": true,
+#     "ip_duplication": {
+#         "limit": 234,
+#         "time": 234
+#     },
+#     "ip_local_learning": {
+#         "disable": true,
+#         "limit_per_mac_ipv4": 345,
+#         "limit_per_mac_ipv6": 2345,
+#         "time": {
+#             "down": 234,
+#             "poll": 223,
+#             "reachable": 234,
+#             "stale": 23
+#         }
+#     },
+#     "logging": {
+#         "peer_state": true,
+#         "vpws_vc_state": true
+#     },
+#     "mac_duplication": {
+#         "limit": 213,
+#         "time": 123
+#     },
+#     "multicast_advertise": true,
+#     "multihoming_aliasing_disable": true,
+#     "replication_type": "static",
+#     "route_target_auto_vni": true,
+#     "router_id": "Loopback0"
+# }
+
+# Using rendered
+
+- name: Render the commands for provided ios_l2vpn_evpn configuration
+  register: result
+  cisco.ios.ios_l2vpn_evpn:
+      config:
+        logging:
+          peer_state: true
+          vpws_vc_state: true
+        replication_type: "static"
+        flooding_suppression_address_resolution_disable: true 
+        ip_duplication:
+          limit: 234
+          time: 234
+        mac_duplication:
+          limit: 213
+          time: 123
+        router_id: "Loopback0"
+        multihoming_aliasing_disable: true
+        ip_local_learning:
+          disable: true
+          limit_per_mac_ipv4: 345
+          limit_per_mac_ipv6: 2345
+          time:
+            down: 234
+            poll: 223
+            reachable: 234
+            stale: 23
+        default_gateway_advertise: true
+        route_target_auto_vni: true
+        multicast_advertise: true
+    state: rendered
+
+# Task Output:
+# ------------
+# "rendered": [
+#     "l2vpn evpn",
+#     "logging peer state",
+#     "logging vpws vc-state",
+#     "replication-type static",
+#     "flooding-suppression address-resolution disable",
+#     "ip duplication limit 234 time 234",
+#     "mac duplication limit 213 time 123",
+#     "router-id Loopback0",
+#     "multihoming aliasing disable",
+#     "ip local-learning disable",
+#     "ip local-learning limit per-mac ipv4 345",
+#     "ip local-learning limit per-mac ipv6 2345",
+#     "ip local-learning time down 234",
+#     "ip local-learning time poll 223",
+#     "ip local-learning time reachable 234",
+#     "ip local-learning time stale 23",
+#     "default-gateway advertise",
+#     "route-target auto vni",
+#     "multicast advertise",
+#     "exit"
+# ]
+
+# Using merged
+
+# Before state:
+# -------------
+# l2vpn evpn
+#  logging vpws vc-state
+#  logging peer state
+#  replication-type static
+#  flooding-suppression address-resolution disable
+#  ip duplication limit 234 time 234
+#  mac duplication limit 213 time 123
+#  router-id Loopback0
+#  multihoming aliasing disable
+
+- name: Merge provided ios_l2vpn_evpn configuration with device configuration
+  register: result
+  cisco.ios.ios_l2vpn_evpn:
+    config:
+      logging:
+        peer_state: true
+        vpws_vc_state: true
+      replication_type: "static"
+      flooding_suppression_address_resolution_disable: true 
+      ip_duplication:
+        limit: 234
+        time: 234
+      mac_duplication:
+        limit: 213
+        time: 123
+      router_id: "Loopback0"
+      multihoming_aliasing_disable: true
+    state: merged
+
+# Task Output:
+# ------------
+# "commands": [
+#     "l2vpn evpn",
+#     "ip local-learning disable",
+#     "ip local-learning limit per-mac ipv4 345",
+#     "ip local-learning limit per-mac ipv6 2345",
+#     "ip local-learning time down 234",
+#     "ip local-learning time poll 223",
+#     "ip local-learning time reachable 234",
+#     "ip local-learning time stale 23",
+#     "exit"
+# ]
+#
+# After state:
+# -------------
+# l2vpn evpn
+#  logging vpws vc-state
+#  logging peer state
+#  replication-type static
+#  flooding-suppression address-resolution disable
+#  ip duplication limit 234 time 234
+#  mac duplication limit 213 time 123
+#  router-id Loopback0
+#  multihoming aliasing disable
+#  ip local-learning disable
+#  ip local-learning limit per-mac ipv4 345
+#  ip local-learning limit per-mac ipv6 2345
+#  ip local-learning time down 234
+#  ip local-learning time poll 223
+#  ip local-learning time reachable 234
+#  ip local-learning time stale 23
+
+# Using replaced
+
+# Before state:
+# -------------
+# l2vpn evpn
+#  logging vpws vc-state
+#  logging peer state
+#  replication-type static
+#  flooding-suppression address-resolution disable
+#  ip duplication limit 234 time 234
+#  mac duplication limit 213 time 123
+#  router-id Loopback0
+#  multihoming aliasing disable
+#  ip local-learning disable
+#  ip local-learning limit per-mac ipv4 345
+#  ip local-learning limit per-mac ipv6 2345
+#  ip local-learning time down 234
+#  ip local-learning time poll 223
+#  ip local-learning time reachable 234
+#  ip local-learning time stale 23
+#  default-gateway advertise
+#  route-target auto vni
+#  multicast advertise
+
+- name: Replace provided l2vpn configuration
+  register: result
+  cisco.ios.ios_l2vpn_evpn:
+    config:
+      logging:
+        peer_state: true
+        vpws_vc_state: true
+      replication_type: "ingress"
+      flooding_suppression_address_resolution_disable: false 
+      router_id: "Loopback1"
+      default_gateway_advertise: true
+      multicast_advertise: true
+    state: replaced
+
+# Task Output:
+# ------------
+# "commands": [
+#     "l2vpn evpn",
+#     "replication-type ingress",
+#     "no flooding-suppression address-resolution disable",
+#     "no ip duplication limit 234 time 234",
+#     "no mac duplication limit 213 time 123",
+#     "router-id Loopback1",
+#     "no multihoming aliasing disable",
+#     "no ip local-learning disable",
+#     "no ip local-learning limit per-mac ipv4 345",
+#     "no ip local-learning limit per-mac ipv6 2345",
+#     "no ip local-learning time down 234",
+#     "no ip local-learning time poll 223",
+#     "no ip local-learning time reachable 234",
+#     "no ip local-learning time stale 23",
+#     "no route-target auto vni",
+#     "exit"
+# ],
+#
+# After state:
+# -------------
+# l2vpn evpn
+#  logging vpws vc-state
+#  logging peer state
+#  replication-type ingress
+#  router-id Loopback1
+#  default-gateway advertise
+#  multicast advertise
+
+# Using deleted
+
+# Before state:
+# -------------
+# l2vpn evpn
+#  logging vpws vc-state
+#  logging peer state
+#  replication-type static
+#  flooding-suppression address-resolution disable
+#  ip duplication limit 234 time 234
+#  mac duplication limit 213 time 123
+#  router-id Loopback0
+#  multihoming aliasing disable
+#  ip local-learning disable
+#  ip local-learning limit per-mac ipv4 345
+#  ip local-learning limit per-mac ipv6 2345
+#  ip local-learning time down 234
+#  ip local-learning time poll 223
+#  ip local-learning time reachable 234
+#  ip local-learning time stale 23
+#  default-gateway advertise
+#  route-target auto vni
+#  multicast advertise
+
+- name: Delete provided ios_l2vpn_evpn configuration
+  register: result
+  cisco.ios.ios_l2vpn_evpn:
+    config:
+      logging:
+        peer_state: true
+        vpws_vc_state: false
+      replication_type: "static"
+      flooding_suppression_address_resolution_disable: false 
+      ip_duplication:
+        limit: 234
+        time: 234
+      mac_duplication:
+        limit: 213
+        time: 123
+      router_id: "Loopback0"
+      multihoming_aliasing_disable: true
+    state: deleted
+
+# Task Output:
+# ------------
+# "commands": [
+#     "l2vpn evpn",
+#     "no logging peer state",
+#     "no replication-type static",
+#     "no ip duplication limit 234 time 234",
+#     "no mac duplication limit 213 time 123",
+#     "no router-id Loopback0",
+#     "no multihoming aliasing disable",
+#     "exit"
+# ],
+#
+# After state:
+# -------------
+# l2vpn evpn
+#  logging vpws vc-state
+#  flooding-suppression address-resolution disable
+#  ip local-learning disable
+#  ip local-learning limit per-mac ipv4 345
+#  ip local-learning limit per-mac ipv6 2345
+#  ip local-learning time down 234
+#  ip local-learning time poll 223
+#  ip local-learning time reachable 234
+#  ip local-learning time stale 23
+#  default-gateway advertise
+#  route-target auto vni
+#  multicast advertise
 
 """
 
@@ -189,17 +583,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - l2vpn evpn
+    - no logging peer state
+    - no replication-type static
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - l2vpn evpn
+    - no logging peer state
+    - no replication-type static
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)

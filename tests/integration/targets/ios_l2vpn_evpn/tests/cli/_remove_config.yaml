@@ -1,0 +1,4 @@
+---
+- name: Remove all ios_l2vpn_evpn configuration
+  cisco.ios.ios_l2vpn_evpn:
+    state: deleted

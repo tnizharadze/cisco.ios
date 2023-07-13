@@ -1,0 +1,121 @@
+---
+gathered:
+  config:
+    logging:
+      peer_state: true
+      vpws_vc_state: true
+    replication_type: "static"
+    flooding_suppression_address_resolution_disable: true 
+    ip_duplication:
+      limit: 234
+      time: 234
+    mac_duplication:
+      limit: 213
+      time: 123
+    router_id: "Loopback0"
+    multihoming_aliasing_disable: true
+    ip_local_learning:
+      disable: true
+      limit_per_mac_ipv4: 345
+      limit_per_mac_ipv6: 2345
+      time:
+        down: 234
+        poll: 223
+        reachable: 234
+        stale: 23
+    default_gateway_advertise: true
+    route_target_auto_vni: true
+    multicast_advertise: true
+rendered:
+  commands:
+    - "l2vpn evpn"
+    - "logging vpws vc-state"
+    - "logging peer state"
+    - "replication-type static"
+    - "flooding-suppression address-resolution disable"
+    - "ip duplication limit 234 time 234"
+    - "mac duplication limit 213 time 123"
+    - "router-id Loopback0"
+    - "multihoming aliasing disable"
+    - "ip local-learning disable"
+    - "ip local-learning limit per-mac ipv4 345"
+    - "ip local-learning limit per-mac ipv6 2345"
+    - "ip local-learning time down 234"
+    - "ip local-learning time poll 223"
+    - "ip local-learning time reachable 234"
+    - "ip local-learning time stale 23"
+    - "default-gateway advertise"
+    - "route-target auto vni"
+    - "multicast advertise"
+    - "exit"
+merged:
+  commands:
+    - "l2vpn evpn"
+    - "ip local-learning disable"
+    - "ip local-learning limit per-mac ipv4 345"
+    - "ip local-learning limit per-mac ipv6 2345"
+    - "ip local-learning time down 234"
+    - "ip local-learning time poll 223"
+    - "ip local-learning time reachable 234"
+    - "ip local-learning time stale 23"
+    - "exit"
+  after:
+    flooding_suppression_address_resolution_disable: true 
+    ip_duplication:
+      limit: 234
+      time: 234
+    ip_local_learning:
+      disable: true
+      limit_per_mac_ipv4: 345
+      limit_per_mac_ipv6: 2345
+      time:
+        down: 234
+        poll: 223
+        reachable: 234
+        stale: 23
+    logging:
+      peer_state: true
+      vpws_vc_state: true
+    mac_duplication:
+      limit: 213
+      time: 123
+    multihoming_aliasing_disable: true
+    replication_type: "static"
+    router_id: "Loopback0"
+replaced:
+  commands:
+    - "l2vpn evpn"
+    - "replication-type ingress"
+    - "no flooding-suppression address-resolution disable"
+    - "no ip duplication limit 234 time 234"
+    - "no mac duplication limit 213 time 123"
+    - "no multihoming aliasing disable"
+    - "no ip local-learning disable"
+    - "no ip local-learning limit per-mac ipv4 345"
+    - "no ip local-learning limit per-mac ipv6 2345"
+    - "no ip local-learning time down 234"
+    - "no ip local-learning time poll 223"
+    - "no ip local-learning time reachable 234"
+    - "no ip local-learning time stale 23"
+    - "no route-target auto vni"
+    - "router-id Loopback1"
+    - "exit"
+  after:
+    default_gateway_advertise: true
+    logging:
+      peer_state: true
+      vpws_vc_state: true
+    multicast_advertise: true
+    replication_type: "ingress"
+    router_id: "Loopback1"
+deleted:
+  commands:
+    - "l2vpn evpn"
+    - "no logging peer state"
+    - "no replication-type static"
+    - "no ip duplication limit 234 time 234"
+    - "no mac duplication limit 213 time 123"
+    - "no router-id Loopback0"
+    - "no multihoming aliasing disable"
+    - "exit"
+

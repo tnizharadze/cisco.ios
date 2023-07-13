@@ -177,34 +177,66 @@ class TestIosL2VPNEVPNModule(TestIosModule):
     def test_ios_l2vpn_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            l2vpn
-             logging pseudowire status
-             logging redundancy
-             redundancy predictive enabled
-             router-id 5.5.5.5
+            l2vpn evpn
+             logging vpws vc-state
+             logging peer state
+             replication-type static
+             flooding-suppression address-resolution disable
+             ip duplication limit 234 time 234
+             mac duplication limit 213 time 123
+             router-id Loopback0
+             multihoming aliasing disable
+             ip local-learning disable
+             ip local-learning limit per-mac ipv4 345
+             ip local-learning limit per-mac ipv6 2345
+             default-gateway advertise
+             route-target auto vni
+             multicast advertise
             """,
         )
         set_module_args(
             dict(
                 config={
                     "logging": {
-                        "redundancy": False,
-                        "vc_state": True,
+                        "peer_state": True,
+                        "vpws_vc_state": True,
                     },
-                    "redundancy_predictive_enabled": True,
-                    "pseudowire_group_status": False,
-                    "router_id": "4.4.4.4",
-                    "shutdown": True,
+                    "replication_type": "static",
+                    "flooding_suppression_address_resolution_disable": True, 
+                    "ip_duplication": {
+                        "limit": 234,
+                        "time": 234,
+                    },
+                    "mac_duplication": {
+                        "limit": 213,
+                        "time": 123,
+                    },
+                    "router_id": "Loopback0",
+                    "multihoming_aliasing_disable": True,
+                    "ip_local_learning": {
+                        "disable": True,
+                        "limit_per_mac_ipv4": 345,
+                        "limit_per_mac_ipv6": 2345,
+                        "time": {
+                            "down": 234,
+                            "poll": 223,
+                            "reachable": 234,
+                            "stale": 23,
+                        },
+                    },
+                    "default_gateway_advertise": True,
+                    "route_target_auto_vni": True,
+                    "multicast_advertise": True,
                 },
                 state="merged",
             ),
         )
         commands = [
-            "l2vpn",
-            "no logging redundancy",
-            "logging vc-state",
-            "router-id 4.4.4.4",
-            "shutdown",
+            "l2vpn evpn",
+            "ip local-learning time down 234",
+            "ip local-learning time poll 223",
+            "ip local-learning time reachable 234",
+            "ip local-learning time stale 23",
             "exit",
         ]
         result = self.execute_module(changed=True)
@@ -213,34 +245,61 @@ class TestIosL2VPNEVPNModule(TestIosModule):
     def test_ios_l2vpn_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            l2vpn
-             logging pseudowire status
-             logging redundancy
-             redundancy predictive enabled
-             router-id 4.4.4.4
+            l2vpn evpn
+             logging vpws vc-state
+             logging peer state
+             replication-type static
+             flooding-suppression address-resolution disable
+             ip duplication limit 234 time 234
+             mac duplication limit 213 time 123
+             router-id Loopback0
+             multihoming aliasing disable
+             ip local-learning disable
+             ip local-learning limit per-mac ipv4 345
+             ip local-learning limit per-mac ipv6 2345
+             ip local-learning time down 234
+             ip local-learning time poll 223
+             ip local-learning time reachable 234
+             ip local-learning time stale 23
+             default-gateway advertise
+             route-target auto vni
+             multicast advertise
             """,
         )
         set_module_args(
             dict(
                 config={
                     "logging": {
-                        "redundancy": False,
-                        "vc_state": True,
+                        "peer_state": False,
+                        "vpws_vc_state": False,
                     },
-                    "redundancy_predictive_enabled": True,
-                    "pseudowire_group_status": False,
-                    "router_id": "4.4.4.4",
-                    "shutdown": True,
+                    "replication_type": "static",
+                    "flooding_suppression_address_resolution_disable": True, 
+                    "ip_duplication": {
+                        "limit": 234,
+                        "time": 234,
+                    },
+                    "router_id": "Loopback0",
+                    "default_gateway_advertise": True,
+                    "route_target_auto_vni": True,
+                    "multicast_advertise": True,
                 },
                 state="replaced",
             ),
         )
         commands = [
-            "l2vpn",
-            "no logging pseudowire status",
-            "no logging redundancy",
-            "logging vc-state",
-            "shutdown",
+            "l2vpn evpn",
+            "no logging vpws vc-state",
+            "no logging peer state",
+            "no ip local-learning time reachable 234",
+            "no mac duplication limit 213 time 123",
+            "no ip local-learning disable",
+            "no ip local-learning limit per-mac ipv4 345",
+            "no ip local-learning limit per-mac ipv6 2345",
+            "no ip local-learning time down 234",
+            "no ip local-learning time stale 23",
+            "no ip local-learning time poll 223",
+            "no multihoming aliasing disable",
             "exit",
         ]
         result = self.execute_module(changed=True)
@@ -250,36 +309,46 @@ class TestIosL2VPNEVPNModule(TestIosModule):
     def test_ios_l2vpn_deleted_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            l2vpn
-             logging pseudowire status
-             logging redundancy
-             logging vc-state
-             redundancy predictive enabled
-             router-id 4.4.4.4
-             shutdown
+            l2vpn evpn
+             logging vpws vc-state
+             logging peer state
+             replication-type static
+             flooding-suppression address-resolution disable
+             ip duplication limit 234 time 234
+             mac duplication limit 213 time 123
+             router-id Loopback0
+             multihoming aliasing disable
+             ip local-learning disable
+             ip local-learning limit per-mac ipv4 345
+             ip local-learning limit per-mac ipv6 2345
+             ip local-learning time down 234
+             ip local-learning time poll 223
+             ip local-learning time reachable 234
+             ip local-learning time stale 23
+             default-gateway advertise
+             route-target auto vni
+             multicast advertise
             """,
         )
         set_module_args(
             dict(
                 config={
                     "logging": {
-                        "redundancy": False,
-                        "vc_state": True,
+                        "vpws_vc_state": False,
                     },
-                    "redundancy_predictive_enabled": True,
-                    "pseudowire_group_status": False,
-                    "router_id": "4.4.4.4",
-                    "shutdown": True,
+                    "replication_type": "static",
+                    "mac_duplication": {
+                        "limit": 213,
+                        "time": 123,
+                    },
                 },
                 state="deleted",
             ),
         )
         commands = [
-            "l2vpn",
-            "no router-id 4.4.4.4",
-            "no redundancy predictive enabled",
-            "no shutdown",
-            "no logging vc-state",
+            "l2vpn evpn",
+            "no mac duplication limit 213 time 123",
+            "no replication-type static",
             "exit",
         ]
         result = self.execute_module(changed=True)

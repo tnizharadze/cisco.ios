@@ -1,0 +1,74 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_l2vpn_evpn merged state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge provided ios_l2vpn_evpn configuration with device configuration
+      register: result
+      cisco.ios.ios_l2vpn_evpn:
+        config:
+          logging:
+            peer_state: true
+            vpws_vc_state: true
+          replication_type: "static"
+          flooding_suppression_address_resolution_disable: true 
+          ip_duplication:
+            limit: 234
+            time: 234
+          mac_duplication:
+            limit: 213
+            time: 123
+          router_id: "Loopback0"
+          multihoming_aliasing_disable: true
+        state: merged
+
+    - name: Test 1. Merge provided ios_l2vpn_evpn configuration with device configuration
+      register: result
+      cisco.ios.ios_l2vpn_evpn: &id001
+        config:
+          ip_duplication:
+            limit: 234
+            time: 234
+          mac_duplication:
+            limit: 213
+            time: 123
+          router_id: "Loopback0"
+          multihoming_aliasing_disable: true
+          ip_local_learning:
+            disable: true
+            limit_per_mac_ipv4: 345
+            limit_per_mac_ipv6: 2345
+            time:
+              down: 234
+              poll: 223
+              reachable: 234
+              stale: 23
+          default_gateway_advertise: false
+          route_target_auto_vni: false
+          multicast_advertise: false
+        state: merged
+
+    - name: Assert that correct set of ios_l2vpn_evpn commands were generated
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+
+    - name: Test 2. Merge provided ios_l2vpn_evpn configuration with device configuration (idempotent)
+      register: result
+      cisco.ios.ios_l2vpn_evpn: *id001
+
+    - name: Assert that the previous task has no changes made
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+#  always:
+#    - ansible.builtin.include_tasks: _remove_config.yaml
