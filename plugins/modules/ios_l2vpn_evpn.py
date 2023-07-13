@@ -301,32 +301,32 @@ EXAMPLES = """
 - name: Render the commands for provided ios_l2vpn_evpn configuration
   register: result
   cisco.ios.ios_l2vpn_evpn:
-      config:
-        logging:
-          peer_state: true
-          vpws_vc_state: true
-        replication_type: "static"
-        flooding_suppression_address_resolution_disable: true 
-        ip_duplication:
-          limit: 234
-          time: 234
-        mac_duplication:
-          limit: 213
-          time: 123
-        router_id: "Loopback0"
-        multihoming_aliasing_disable: true
-        ip_local_learning:
-          disable: true
-          limit_per_mac_ipv4: 345
-          limit_per_mac_ipv6: 2345
-          time:
-            down: 234
-            poll: 223
-            reachable: 234
-            stale: 23
-        default_gateway_advertise: true
-        route_target_auto_vni: true
-        multicast_advertise: true
+    config:
+      logging:
+        peer_state: true
+        vpws_vc_state: true
+      replication_type: "static"
+      flooding_suppression_address_resolution_disable: true
+      ip_duplication:
+        limit: 234
+        time: 234
+      mac_duplication:
+        limit: 213
+        time: 123
+      router_id: "Loopback0"
+      multihoming_aliasing_disable: true
+      ip_local_learning:
+        disable: true
+        limit_per_mac_ipv4: 345
+        limit_per_mac_ipv6: 2345
+        time:
+          down: 234
+          poll: 223
+          reachable: 234
+          stale: 23
+      default_gateway_advertise: true
+      route_target_auto_vni: true
+      multicast_advertise: true
     state: rendered
 
 # Task Output:
@@ -376,7 +376,7 @@ EXAMPLES = """
         peer_state: true
         vpws_vc_state: true
       replication_type: "static"
-      flooding_suppression_address_resolution_disable: true 
+      flooding_suppression_address_resolution_disable: true
       ip_duplication:
         limit: 234
         time: 234
@@ -452,7 +452,7 @@ EXAMPLES = """
         peer_state: true
         vpws_vc_state: true
       replication_type: "ingress"
-      flooding_suppression_address_resolution_disable: false 
+      flooding_suppression_address_resolution_disable: false
       router_id: "Loopback1"
       default_gateway_advertise: true
       multicast_advertise: true
@@ -521,7 +521,7 @@ EXAMPLES = """
         peer_state: true
         vpws_vc_state: false
       replication_type: "static"
-      flooding_suppression_address_resolution_disable: false 
+      flooding_suppression_address_resolution_disable: false
       ip_duplication:
         limit: 234
         time: 234
@@ -560,7 +560,6 @@ EXAMPLES = """
 #  default-gateway advertise
 #  route-target auto vni
 #  multicast advertise
-
 """
 
 RETURN = """
