@@ -26,21 +26,6 @@ class L2vpn_evpnTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "logging.peer_state",
-            "getval": re.compile(
-                r"""
-                \slogging\speer\s(?P<peer_state>state)
-                \s*
-                $""", re.VERBOSE,
-            ),
-            "setval": "logging peer state",
-            "result": {
-                "logging": {
-                    "peer_state": "{{ not not peer_state }}", 
-                },
-            },
-        },
-        {
             "name": "logging.vpws_vc_state",
             "getval": re.compile(
                 r"""
@@ -52,6 +37,21 @@ class L2vpn_evpnTemplate(NetworkTemplate):
             "result": {
                 "logging": {
                     "vpws_vc_state": "{{ not not vpws_vc_state }}", 
+                },
+            },
+        },
+        {
+            "name": "logging.peer_state",
+            "getval": re.compile(
+                r"""
+                \slogging\speer\s(?P<peer_state>state)
+                \s*
+                $""", re.VERBOSE,
+            ),
+            "setval": "logging peer state",
+            "result": {
+                "logging": {
+                    "peer_state": "{{ not not peer_state }}", 
                 },
             },
         },

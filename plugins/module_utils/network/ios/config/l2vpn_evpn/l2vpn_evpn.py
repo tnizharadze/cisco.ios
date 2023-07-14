@@ -49,8 +49,8 @@ class L2vpn_evpn(ResourceModule):
             tmplt=L2vpn_evpnTemplate(),
         )
         self.linear_parsers  = [
-            "logging.peer_state",
             "logging.vpws_vc_state",
+            "logging.peer_state",
             "replication_type",
             "flooding_suppression_address_resolution_disable",
             "ip_duplication",
