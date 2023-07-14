@@ -52,9 +52,9 @@ class L2vpn(ResourceModule):
             "logging.pseudowire_status",
             "logging.redundancy",
             "logging.vc_state",
-            "router_id",
             "redundancy_predictive_enabled",
             "pseudowire_group_status",
+            "router_id",
             "shutdown",
         ]
 
