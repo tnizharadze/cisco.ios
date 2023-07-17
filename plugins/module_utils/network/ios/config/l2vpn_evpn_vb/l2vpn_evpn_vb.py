@@ -83,7 +83,10 @@ class L2vpn_evpn_vb(ResourceModule):
 
         if self.state == "deleted":
             for k, hx in iteritems(deepcopy(haved)):
-                if k in wantd and self._compare_for_delete(want=wantd[k], have=hx):
+                if not wantd:
+                    self.commands.append(self._tmplt.render(hx, "instance", True))
+                    haved.pop(k)
+                elif k in wantd and self._compare_deleted_entries(want=wantd[k], have=hx):
                     self.commands.append(self._tmplt.render(hx, "instance", True))
                     wantd.pop(k)
                     haved.pop(k)
@@ -147,7 +150,7 @@ class L2vpn_evpn_vb(ResourceModule):
                 hrec.update({k: hx})
         return hrec
 
-    def _compare_for_delete(self, want, have):
+    def _compare_deleted_entries(self, want, have):
         result = True
         for k, hx in iteritems(have):
             if k in want and hx == want[k]:

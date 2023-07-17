@@ -1,0 +1,131 @@
+---
+gathered:
+  config:
+    - instance: "124"
+      auto_route_target: false
+      default_gateway_advertise: "enable"
+      encapsulation: "vxlan"
+      ip_local_learning: "disable"
+      multicast_advertise: "disable"
+      rd: "65374:103"
+      re_originate_route_type5: true
+      replication_type: "ingress"
+      route_target_import:
+        - "444:555"
+        - "333:444"
+      route_target_export:
+        - "444:555"
+        - "333:444"
+    - instance: "126"
+      auto_route_target: true
+      default_gateway_advertise: "disable"
+      encapsulation: "vxlan"
+      ip_local_learning: "enable"
+      multicast_advertise: "enable"
+      rd: "65500:200"
+      replication_type: "static"
+      route_target_import:
+        - "444:555"
+        - "666:111"
+      route_target_export:
+        - "444:555"
+        - "666:111"
+rendered:
+  commands:
+      - "l2vpn evpn instance 124 vlan-based"
+      - "route-target import 333:444"
+      - "route-target import 444:555"
+      - "route-target export 333:444"
+      - "route-target export 444:555"
+      - "encapsulation vxlan"
+      - "rd 65374:103"
+      - "replication-type ingress"
+      - "ip local-learning disable"
+      - "default-gateway advertise enable"
+      - "multicast advertise disable"
+      - "re-originate route-type5"
+      - "exit"
+      - "l2vpn evpn instance 126 vlan-based"
+      - "route-target import 444:555"
+      - "route-target import 666:111"
+      - "route-target export 444:555"
+      - "route-target export 666:111"
+      - "encapsulation vxlan"
+      - "rd 65500:200"
+      - "auto-route-target"
+      - "replication-type static"
+      - "ip local-learning enable"
+      - "default-gateway advertise disable"
+      - "multicast advertise enable"
+      - "exit"
+merged:
+  commands:
+    - "l2vpn evpn"
+    - "ip local-learning disable"
+    - "ip local-learning limit per-mac ipv4 345"
+    - "ip local-learning limit per-mac ipv6 2345"
+    - "ip local-learning time down 234"
+    - "ip local-learning time poll 223"
+    - "ip local-learning time reachable 234"
+    - "ip local-learning time stale 23"
+    - "exit"
+  after:
+    flooding_suppression_address_resolution_disable: true 
+    ip_duplication:
+      limit: 234
+      time: 234
+    ip_local_learning:
+      disable: true
+      limit_per_mac_ipv4: 345
+      limit_per_mac_ipv6: 2345
+      time:
+        down: 234
+        poll: 223
+        reachable: 234
+        stale: 23
+    logging:
+      peer_state: true
+      vpws_vc_state: true
+    mac_duplication:
+      limit: 213
+      time: 123
+    multihoming_aliasing_disable: true
+    replication_type: "static"
+    router_id: "Loopback0"
+replaced:
+  commands:
+    - "l2vpn evpn"
+    - "replication-type ingress"
+    - "no flooding-suppression address-resolution disable"
+    - "no ip duplication limit 234 time 234"
+    - "no mac duplication limit 213 time 123"
+    - "no multihoming aliasing disable"
+    - "no ip local-learning disable"
+    - "no ip local-learning limit per-mac ipv4 345"
+    - "no ip local-learning limit per-mac ipv6 2345"
+    - "no ip local-learning time down 234"
+    - "no ip local-learning time poll 223"
+    - "no ip local-learning time reachable 234"
+    - "no ip local-learning time stale 23"
+    - "no route-target auto vni"
+    - "router-id Loopback1"
+    - "exit"
+  after:
+    default_gateway_advertise: true
+    logging:
+      peer_state: true
+      vpws_vc_state: true
+    multicast_advertise: true
+    replication_type: "ingress"
+    router_id: "Loopback1"
+deleted:
+  commands:
+    - "l2vpn evpn"
+    - "no logging peer state"
+    - "no replication-type static"
+    - "no ip duplication limit 234 time 234"
+    - "no mac duplication limit 213 time 123"
+    - "no router-id Loopback0"
+    - "no multihoming aliasing disable"
+    - "exit"
+

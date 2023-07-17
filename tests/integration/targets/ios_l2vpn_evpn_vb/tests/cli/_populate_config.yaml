@@ -1,0 +1,5 @@
+---
+- name: Populate ios_l2vpn_evpn configuration
+  cisco.ios.ios_l2vpn_evpn_vb:
+    config: "{{ gathered['config'] }}"
+    state: merged
