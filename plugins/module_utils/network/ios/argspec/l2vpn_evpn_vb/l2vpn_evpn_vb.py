@@ -36,7 +36,7 @@ class L2vpn_evpn_vbArgs(object):  # pylint: disable=R0903
             "type": "list",
             "elements": "dict",
             "options": {
-                "instance": {"type": "int"},
+                "instance": {"type": "str", "required": True},
                 "auto_route_target": {"type": "bool", "default": True},
                 "default_gateway_advertise": {
                     "type": "str",

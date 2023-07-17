@@ -36,7 +36,7 @@ class L2vpn_evpn_vbTemplate(NetworkTemplate):
             "setval": "l2vpn evpn instance {{ instance }} vlan-based",
             "result": {
                 "{{ instance }}": {
-                    "instance": "{{ instance | int }}",
+                    "instance": "{{ instance }}",
                 },
             },
             "shared": True,

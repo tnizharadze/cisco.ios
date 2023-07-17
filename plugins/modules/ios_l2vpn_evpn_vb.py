@@ -31,6 +31,7 @@ options:
       instance:
         description: <1-65535>  EVPN instance identifier value
         type: int
+        required: true
       auto_route_target:
         description: Automatically set a route-target
         type: bool

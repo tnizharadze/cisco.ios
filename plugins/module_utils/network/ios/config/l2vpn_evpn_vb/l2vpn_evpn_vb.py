@@ -22,6 +22,7 @@ from copy import deepcopy
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
+    get_from_dict,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -47,7 +48,19 @@ class L2vpn_evpn_vb(ResourceModule):
             resource="l2vpn_evpn_vb",
             tmplt=L2vpn_evpn_vbTemplate(),
         )
-        self.parsers = [
+        self.linear_parsers = [
+            "encapsulation",
+            "rd",
+            "auto_route_target",
+            "replication_type",
+            "ip_local_learning",
+            "default_gateway_advertise",
+            "multicast_advertise",
+            "re_originate_route_type5",
+        ]
+        self.complex_parsers = [
+            "route_target_import",
+            "route_target_export",
         ]
 
     def execute_module(self):
@@ -65,33 +78,89 @@ class L2vpn_evpn_vb(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {entry['name']: entry for entry in self.want}
-        haved = {entry['name']: entry for entry in self.have}
+        wantd = self._l2vpn_list_to_dict(self.want)
+        haved = self._l2vpn_list_to_dict(self.have)
+
+        if self.state == "deleted":
+            for k, hx in iteritems(deepcopy(haved)):
+                if k in wantd and self._compare_for_delete(want=wantd[k], have=hx):
+                    self.commands.append(self._tmplt.render(hx, "instance", True))
+                    wantd.pop(k)
+                    haved.pop(k)
+            haved = self._dict_copy_deleted(wantd, haved)
+            wantd = {}
+
+        if self.state == "replaced":
+            for k, hx in iteritems(deepcopy(haved)):
+                if k not in wantd:
+                    self.commands.append(self._tmplt.render(hx, "instance", True))
+                    haved.pop(k)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, empty out wantd and set haved to wantd
-        if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
-            wantd = {}
+        if wantd:
+            for k, wx in iteritems(wantd):
+                self._compare_entries(want=wx, have=haved.pop(k, {}))
+        elif haved:
+            for k, hx in iteritems(haved):
+                self._compare_entries(want={}, have=hx)
 
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
-                if k not in wantd:
-                    self._compare(want={}, have=have)
+    def _compare_entries(self, want, have):
+        begin = len(self.commands)
+        self._compare_lists(want, have)
+        self.compare(parsers=self.linear_parsers, want=want, have=have)
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "instance", False))
+            self.commands.append("exit")
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+    def _compare_lists(self, want, have):
+        for x in self.complex_parsers:
+            wx = set(get_from_dict(want, x) or [])
+            hx = set(get_from_dict(have, x) or [])
+            wdiff = sorted(list(wx - hx))
+            hdiff = sorted(list(hx - wx))
+            for each in hdiff:
+                self.commands.append(self._tmplt.render({x: each}, x, True))
+            for each in wdiff:
+                self.commands.append(self._tmplt.render({x: each}, x, False))
 
-    def _compare(self, want, have):
-        """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the L2vpn_evpn_vb network resource.
-        """
-        self.compare(parsers=self.parsers, want=want, have=have)
+    def _dict_copy_deleted(self, want, have, x=""):
+        hrec = {}
+        have_dict = have if x == "" else get_from_dict(have, x)
+        for k, hx in iteritems(have_dict):
+            if not want:
+                hrec.update({k: hx})
+                continue
+            dstr = k if x == "" else x + "." + k
+            wx = get_from_dict(want, dstr)
+            if wx is None:
+                continue
+            if isinstance(wx, dict):
+                hrec.update({k: self._dict_copy_deleted(want, have, dstr)})
+            elif isinstance(wx, list):
+                wsect = set(wx).intersection(set(hx))
+                if wsect: 
+                    hrec.update({k: sorted(list(wsect))})
+            elif wx == hx:
+                hrec.update({k: hx})
+        return hrec
+
+    def _compare_for_delete(self, want, have):
+        result = True
+        for k, hx in iteritems(have):
+            if k in want and hx == want[k]:
+                continue
+            else:
+                result = False
+                break
+        return result
+
+    def _l2vpn_list_to_dict(self, entry):
+        for x in entry:
+            for k, val in iteritems(x):
+                if isinstance(val, list):
+                    x[k] = sorted(val)
+        entry = {x["instance"]: x for x in entry}
+        return entry
