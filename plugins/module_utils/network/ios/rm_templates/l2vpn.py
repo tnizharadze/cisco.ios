@@ -19,6 +19,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 class L2vpnTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(L2vpnTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -36,7 +37,7 @@ class L2vpnTemplate(NetworkTemplate):
             "setval": "logging pseudowire status",
             "result": {
                 "logging": {
-                    "pseudowire_status": "{{ not not pseudowire_status }}", 
+                    "pseudowire_status": "{{ not not pseudowire_status }}",
                 },
             },
         },
@@ -51,7 +52,7 @@ class L2vpnTemplate(NetworkTemplate):
             "setval": "logging redundancy",
             "result": {
                 "logging": {
-                    "redundancy": "{{ not not redundancy }}", 
+                    "redundancy": "{{ not not redundancy }}",
                 },
             },
         },
@@ -66,7 +67,7 @@ class L2vpnTemplate(NetworkTemplate):
             "setval": "logging vc-state",
             "result": {
                 "logging": {
-                    "vc_state": "{{ not not vc_state }}", 
+                    "vc_state": "{{ not not vc_state }}",
                 },
             },
         },
@@ -80,7 +81,7 @@ class L2vpnTemplate(NetworkTemplate):
             ),
             "setval": "redundancy predictive enabled",
             "result": {
-                "redundancy_predictive_enabled": "{{ not not redundancy_predictive_enabled }}", 
+                "redundancy_predictive_enabled": "{{ not not redundancy_predictive_enabled }}",
             },
         },
         {
@@ -93,7 +94,7 @@ class L2vpnTemplate(NetworkTemplate):
             ),
             "setval": "pseudowire group status",
             "result": {
-                "pseudowire_group_status": "{{ not not pseudowire_group_status }}", 
+                "pseudowire_group_status": "{{ not not pseudowire_group_status }}",
             },
         },
         {
@@ -106,7 +107,7 @@ class L2vpnTemplate(NetworkTemplate):
             ),
             "setval": "router-id {{ router_id }}",
             "result": {
-                "router_id": "{{ router_id }}", 
+                "router_id": "{{ router_id }}",
             },
         },
         {
@@ -119,7 +120,7 @@ class L2vpnTemplate(NetworkTemplate):
             ),
             "setval": "shutdown",
             "result": {
-                "shutdown": "{{ not not shutdown }}", 
+                "shutdown": "{{ not not shutdown }}",
             },
         },
     ]

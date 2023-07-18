@@ -27,6 +27,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2vp
     L2vpnArgs,
 )
 
+
 class L2vpnFacts(object):
     """ The ios l2vpn facts class
     """
@@ -58,13 +59,12 @@ class L2vpnFacts(object):
         l2vpn_parser = L2vpnTemplate(lines=data.splitlines(), module=self._module)
 
         objs = l2vpn_parser.parse()
-#        raise Exception(objs)
-    
+
         params = utils.remove_empties(
             l2vpn_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
         )
-        
-        facts['l2vpn'] = params['config'] if 'config' in params else {} 
+
+        facts['l2vpn'] = params['config'] if 'config' in params else {}
 
         ansible_facts['ansible_network_resources'].pop('l2vpn', None)
         ansible_facts['ansible_network_resources'].update(facts)

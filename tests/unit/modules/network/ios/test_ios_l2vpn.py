@@ -113,7 +113,6 @@ class TestIosL2VPNModule(TestIosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
 
-
     def test_ios_l2vpn_rendered(self):
         set_module_args(
             dict(
@@ -216,7 +215,6 @@ class TestIosL2VPNModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
-
 
     def test_ios_l2vpn_deleted_idempotent(self):
         self.execute_show_command.return_value = dedent(

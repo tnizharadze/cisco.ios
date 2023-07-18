@@ -73,8 +73,8 @@ class L2vpn(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {k: v for k, v in iteritems(self.want) }
-        haved = {k: v for k, v in iteritems(self.have) }
+        wantd = deepcopy(self.want)
+        haved = deepcopy(self.have)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -92,9 +92,9 @@ class L2vpn(ResourceModule):
         for x in self.linear_parsers:
             self.compare([x], want=want, have=have)
         if cmd_len < len(self.commands):
-            self.commands.insert(cmd_len,"l2vpn")
+            self.commands.insert(cmd_len, "l2vpn")
             self.commands.append("exit")
-                        
+
     def _dict_copy_deleted(self, want, have, x=""):
         hrec = {}
         have_dict = have if x == "" else get_from_dict(have, x)
