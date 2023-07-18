@@ -1,0 +1,34 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_l2vpn_evpn_vb parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse the commands for provided configuration
+  register: result
+  cisco.ios.ios_l2vpn_evpn_vb:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- set_fact:
+    sorted_result: |-
+      [
+      {% for each in result["parsed"] %}
+      {
+        {% for key, value in each.items() %}
+        "{{ key }}":
+        {% if value is string %}
+        "{{ value }}"
+        {% elif value is iterable and value is not mapping %}
+        {{ value | sort }}
+        {% else %}
+        {{ value }}
+        {% endif %}
+        ,
+        {% endfor %}
+      },
+      {% endfor %}
+      ]
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - gathered['config'] == sorted_result

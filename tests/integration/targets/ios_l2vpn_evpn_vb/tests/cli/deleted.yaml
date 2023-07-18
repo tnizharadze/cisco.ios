@@ -1,0 +1,76 @@
+---
+- ansible.builtin.debug:
+    msg: START Deleted integration state for ios_l2vpn_evpn_vb ansible_connection={{ ansible_connection }}
+
+- block:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
+
+    - name: Delete provided ios_l2vpn_evpn_vb configuration
+      register: result
+      cisco.ios.ios_l2vpn_evpn_vb: &id001
+        config:
+          - instance: "124"
+            auto_route_target: false
+            default_gateway_advertise: "enable"
+            encapsulation: "vxlan"
+            ip_local_learning: "disable"
+            multicast_advertise: "disable"
+            rd: "65374:103"
+            re_originate_route_type5: true
+            replication_type: "ingress"
+            route_target_import:
+              - "333:444"
+              - "444:555"
+            route_target_export:
+              - "333:444"
+              - "444:555"
+          - instance: "126"
+            auto_route_target: true
+            default_gateway_advertise: "disable"
+            encapsulation: "vxlan"
+            ip_local_learning: "enable"
+            multicast_advertise: "enable"
+            rd: "65500:200"
+            replication_type: "static"
+            route_target_import:
+              - "444:555"
+              - "666:111"
+            route_target_export:
+              - "444:555"
+              - "666:111"
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Delete provided ios_l2vpn_evpn configuration (idempotent)
+      register: result
+      cisco.ios.ios_l2vpn_evpn_vb: *id001
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Delete provided ios_l2vpn_evpn configuration (errored)
+      register: result
+      ignore_errors: true
+      cisco.ios.ios_l2vpn_evpn_vb:
+        config:
+          - instance: "128"
+            encapsulation: "vxlan"
+            rd: "65500:201"
+            replication_type: "ingress"
+            auto_route_target: true
+        state: deleted
+
+    - name: Assert that the previous task has no changes made
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
