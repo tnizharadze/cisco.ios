@@ -19,6 +19,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 class L2vpn_evpnTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(L2vpn_evpnTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -36,7 +37,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
             "setval": "logging vpws vc-state",
             "result": {
                 "logging": {
-                    "vpws_vc_state": "{{ not not vpws_vc_state }}", 
+                    "vpws_vc_state": "{{ not not vpws_vc_state }}",
                 },
             },
         },
@@ -51,7 +52,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
             "setval": "logging peer state",
             "result": {
                 "logging": {
-                    "peer_state": "{{ not not peer_state }}", 
+                    "peer_state": "{{ not not peer_state }}",
                 },
             },
         },
@@ -65,7 +66,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
             ),
             "setval": "replication-type {{ replication_type }}",
             "result": {
-                "replication_type": "{{ replication_type }}", 
+                "replication_type": "{{ replication_type }}",
             },
         },
         {
@@ -78,7 +79,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
             ),
             "setval": "flooding-suppression address-resolution disable",
             "result": {
-                "flooding_suppression_address_resolution_disable": "{{ not not flooding_suppression_address_resolution_disable }}", 
+                "flooding_suppression_address_resolution_disable": "{{ not not flooding_suppression_address_resolution_disable }}",
             },
         },
         {
@@ -94,7 +95,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
                 "ip_duplication": {
                     "limit": "{{ limit | int }}",
                     "time": "{{ time | int }}",
-                }, 
+                },
             },
         },
         {
@@ -110,7 +111,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
                 "mac_duplication": {
                     "limit": "{{ limit | int }}",
                     "time": "{{ time | int }}",
-                }, 
+                },
             },
         },
         {
@@ -136,7 +137,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
             ),
             "setval": "multihoming aliasing disable",
             "result": {
-                "multihoming_aliasing_disable": "{{ not not multihoming_aliasing_disable }}", 
+                "multihoming_aliasing_disable": "{{ not not multihoming_aliasing_disable }}",
             },
         },
         {
@@ -181,7 +182,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
             "result": {
                 "ip_local_learning": {
                     "limit_per_mac_ipv6": "{{ limit_per_mac_ipv6 | int }}",
-                }, 
+                },
             },
         },
         {
@@ -198,7 +199,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
                     "time": {
                         "down": "{{ down | int }}",
                     },
-                }, 
+                },
             },
         },
         {
@@ -215,7 +216,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
                     "time": {
                         "poll": "{{ poll | int }}",
                     },
-                }, 
+                },
             },
         },
         {
@@ -232,7 +233,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
                     "time": {
                         "reachable": "{{ reachable | int }}",
                     },
-                }, 
+                },
             },
         },
         {
@@ -249,7 +250,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
                     "time": {
                         "stale": "{{ stale | int }}",
                     },
-                }, 
+                },
             },
         },
         {
@@ -262,7 +263,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
             ),
             "setval": "default-gateway advertise",
             "result": {
-                "default_gateway_advertise": "{{ not not default_gateway_advertise }}", 
+                "default_gateway_advertise": "{{ not not default_gateway_advertise }}",
             },
         },
         {
@@ -275,7 +276,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
             ),
             "setval": "route-target auto vni",
             "result": {
-                "route_target_auto_vni": "{{ not not route_target_auto_vni }}", 
+                "route_target_auto_vni": "{{ not not route_target_auto_vni }}",
             },
         },
         {
@@ -288,7 +289,7 @@ class L2vpn_evpnTemplate(NetworkTemplate):
             ),
             "setval": "multicast advertise",
             "result": {
-                "multicast_advertise": "{{ not not multicast_advertise }}", 
+                "multicast_advertise": "{{ not not multicast_advertise }}",
             },
         },
     ]

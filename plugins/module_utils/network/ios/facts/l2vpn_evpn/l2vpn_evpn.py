@@ -27,6 +27,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2vp
     L2vpn_evpnArgs,
 )
 
+
 class L2vpn_evpnFacts(object):
     """ The ios l2vpn_evpn facts class
     """
@@ -37,7 +38,6 @@ class L2vpn_evpnFacts(object):
 
     def get_l2vpn_evpn_data(self, connection):
         return connection.get("show running-config | section ^l2vpn evpn$")
-
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for L2vpn_evpn network resource

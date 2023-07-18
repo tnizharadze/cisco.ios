@@ -48,7 +48,7 @@ class L2vpn_evpn(ResourceModule):
             resource="l2vpn_evpn",
             tmplt=L2vpn_evpnTemplate(),
         )
-        self.linear_parsers  = [
+        self.linear_parsers = [
             "logging.vpws_vc_state",
             "logging.peer_state",
             "replication_type",
@@ -84,8 +84,8 @@ class L2vpn_evpn(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {k: v for k, v in iteritems(self.want) }
-        haved = {k: v for k, v in iteritems(self.have) }
+        wantd = deepcopy(self.want)
+        haved = deepcopy(self.have)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -103,7 +103,7 @@ class L2vpn_evpn(ResourceModule):
         for x in self.linear_parsers:
             self.compare([x], want=want, have=have)
         if cmd_len < len(self.commands):
-            self.commands.insert(cmd_len,"l2vpn evpn")
+            self.commands.insert(cmd_len, "l2vpn evpn")
             self.commands.append("exit")
 
     def _dict_copy_deleted(self, want, have, x=""):

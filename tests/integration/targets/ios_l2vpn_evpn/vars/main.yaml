@@ -118,4 +118,3 @@ deleted:
     - "no router-id Loopback0"
     - "no multihoming aliasing disable"
     - "exit"
-

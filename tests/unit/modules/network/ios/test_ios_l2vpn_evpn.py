@@ -27,6 +27,7 @@ from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_ar
 
 from .ios_module import TestIosModule
 
+
 class TestIosL2VPNEVPNModule(TestIosModule):
     module = ios_l2vpn_evpn
 
@@ -81,7 +82,7 @@ class TestIosL2VPNEVPNModule(TestIosModule):
                 "vpws_vc_state": True,
             },
             "replication_type": "static",
-            "flooding_suppression_address_resolution_disable": True, 
+            "flooding_suppression_address_resolution_disable": True,
             "ip_duplication": {
                 "limit": 234,
                 "time": 234,
@@ -120,7 +121,7 @@ class TestIosL2VPNEVPNModule(TestIosModule):
                         "vpws_vc_state": True,
                     },
                     "replication_type": "static",
-                    "flooding_suppression_address_resolution_disable": True, 
+                    "flooding_suppression_address_resolution_disable": True,
                     "ip_duplication": {
                         "limit": 234,
                         "time": 234,
@@ -202,7 +203,7 @@ class TestIosL2VPNEVPNModule(TestIosModule):
                         "vpws_vc_state": True,
                     },
                     "replication_type": "static",
-                    "flooding_suppression_address_resolution_disable": True, 
+                    "flooding_suppression_address_resolution_disable": True,
                     "ip_duplication": {
                         "limit": 234,
                         "time": 234,
@@ -274,7 +275,7 @@ class TestIosL2VPNEVPNModule(TestIosModule):
                         "vpws_vc_state": False,
                     },
                     "replication_type": "static",
-                    "flooding_suppression_address_resolution_disable": True, 
+                    "flooding_suppression_address_resolution_disable": True,
                     "ip_duplication": {
                         "limit": 234,
                         "time": 234,
@@ -304,7 +305,6 @@ class TestIosL2VPNEVPNModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
-
 
     def test_ios_l2vpn_deleted_idempotent(self):
         self.execute_show_command.return_value = dedent(

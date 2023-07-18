@@ -12,4 +12,3 @@
     that:
       - result.changed == false
       - gathered['config'] == result['parsed']
-
