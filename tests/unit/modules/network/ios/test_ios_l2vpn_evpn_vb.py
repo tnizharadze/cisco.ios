@@ -27,6 +27,7 @@ from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_ar
 
 from .ios_module import TestIosModule
 
+
 class TestIosL2VPNEVPNVBModule(TestIosModule):
     module = ios_l2vpn_evpn_vb
 
@@ -121,14 +122,10 @@ class TestIosL2VPNEVPNVBModule(TestIosModule):
         ]
         set_module_args(dict(state="gathered"))
         result = self.execute_module(changed=False)
-        for each in gathered:
-            each["route_target_import"] = set(each["route_target_import"])
-            each["route_target_export"] = set(each["route_target_export"])
         for each in result["gathered"]:
-            each["route_target_import"] = set(each["route_target_import"])
-            each["route_target_export"] = set(each["route_target_export"])
+            each["route_target_import"] = sorted(each["route_target_import"])
+            each["route_target_export"] = sorted(each["route_target_export"])
         self.assertEqual(result["gathered"], gathered)
-
 
     def test_ios_l2vpn_evpn_vb_rendered(self):
         set_module_args(
@@ -178,6 +175,7 @@ class TestIosL2VPNEVPNVBModule(TestIosModule):
         commands = [
             "l2vpn evpn instance 124 vlan-based",
             "encapsulation vxlan",
+            "no auto-route-target",
             "rd 65374:103",
             "route-target export 444:555",
             "route-target import 444:555",
@@ -198,7 +196,6 @@ class TestIosL2VPNEVPNVBModule(TestIosModule):
             "route-target import 666:111",
             "replication-type static",
             "ip local-learning enable",
-            "auto-route-target",
             "default-gateway advertise disable",
             "multicast advertise enable",
             "exit",
@@ -358,8 +355,32 @@ class TestIosL2VPNEVPNVBModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-
     def test_ios_l2vpn_evpn_vb_merged_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "instance": "124",
+                        "auto_route_target": False,
+                        "encapsulation": "vxlan",
+                    },
+                ]
+            )
+        )
+        commands = [
+            "l2vpn evpn instance 124 vlan-based",
+            "encapsulation vxlan",
+            "no auto-route-target",
+            "exit",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l2vpn_evpn_vb_merged_idempotent2(self):
         self.execute_show_command.return_value = dedent(
             """\
             l2vpn evpn instance 124 vlan-based
@@ -435,20 +456,19 @@ class TestIosL2VPNEVPNVBModule(TestIosModule):
             ),
         )
         commands = [
-           "l2vpn evpn instance 124 vlan-based",
-           "auto-route-target",
-           "route-target export 222:777",
-           "route-target import 222:777",
-           "exit",
-           "l2vpn evpn instance 126 vlan-based",
-           "no auto-route-target",
-           "ip local-learning disable",
-           "replication-type ingress",
-           "exit",
+            "l2vpn evpn instance 124 vlan-based",
+            "auto-route-target",
+            "route-target export 222:777",
+            "route-target import 222:777",
+            "exit",
+            "l2vpn evpn instance 126 vlan-based",
+            "no auto-route-target",
+            "ip local-learning disable",
+            "replication-type ingress",
+            "exit",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-
 
     def test_ios_l2vpn_evpn_vb_parsed(self):
         set_module_args(
@@ -458,10 +478,10 @@ class TestIosL2VPNEVPNVBModule(TestIosModule):
                     l2vpn evpn instance 124 vlan-based
                      encapsulation vxlan
                      rd 65374:103
-                     route-target export 444:555
-                     route-target import 444:555
                      route-target export 333:444
                      route-target import 333:444
+                     route-target export 444:555
+                     route-target import 444:555
                      ip local-learning disable
                      no auto-route-target
                      replication-type ingress
@@ -471,10 +491,10 @@ class TestIosL2VPNEVPNVBModule(TestIosModule):
                     l2vpn evpn instance 126 vlan-based
                      encapsulation vxlan
                      rd 65500:200
-                     route-target export 444:555
-                     route-target import 444:555
                      route-target export 666:111
                      route-target import 666:111
+                     route-target export 444:555
+                     route-target import 444:555
                      replication-type static
                      ip local-learning enable
                      default-gateway advertise disable
@@ -496,12 +516,12 @@ class TestIosL2VPNEVPNVBModule(TestIosModule):
                 "re_originate_route_type5": True,
                 "replication_type": "ingress",
                 "route_target_import": [
-                    "444:555",
                     "333:444",
+                    "444:555",
                 ],
                 "route_target_export": [
-                    "444:555",
                     "333:444",
+                    "444:555",
                 ],
             },
             {
@@ -524,4 +544,7 @@ class TestIosL2VPNEVPNVBModule(TestIosModule):
             },
         ]
         result = self.execute_module(changed=False)
+        for each in result["parsed"]:
+            each["route_target_import"] = sorted(each["route_target_import"])
+            each["route_target_export"] = sorted(each["route_target_export"])
         self.assertEqual(result["parsed"], parsed)

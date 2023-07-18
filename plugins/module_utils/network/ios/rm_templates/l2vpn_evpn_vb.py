@@ -19,6 +19,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 class L2vpn_evpn_vbTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(L2vpn_evpn_vbTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -82,7 +83,7 @@ class L2vpn_evpn_vbTemplate(NetworkTemplate):
             "setval": "route-target import {{ route_target_import }}",
             "result": {
                 "{{ instance }}": {
-                    "route_target_import": [ "{{ route_target_import }}" ],
+                    "route_target_import": ["{{ route_target_import }}"],
                 },
             },
         },
@@ -97,7 +98,7 @@ class L2vpn_evpn_vbTemplate(NetworkTemplate):
             "setval": "route-target export {{ route_target_export }}",
             "result": {
                 "{{ instance }}": {
-                    "route_target_export": [ "{{ route_target_export }}" ],
+                    "route_target_export": ["{{ route_target_export }}"],
                 },
             },
         },

@@ -30,12 +30,12 @@ options:
     suboptions:
       instance:
         description: <1-65535>  EVPN instance identifier value
-        type: int
+        type: str
         required: true
       auto_route_target:
         description: Automatically set a route-target
         type: bool
-        default: True
+        default: true
       default_gateway_advertise:
         description: Advertisement of Default Gateway MAC/IP routes
         type: str

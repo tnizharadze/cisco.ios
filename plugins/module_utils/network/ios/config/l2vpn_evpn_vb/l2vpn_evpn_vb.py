@@ -51,17 +51,20 @@ class L2vpn_evpn_vb(ResourceModule):
         self.linear_parsers = [
             "encapsulation",
             "rd",
-            "auto_route_target",
             "replication_type",
             "ip_local_learning",
             "default_gateway_advertise",
             "multicast_advertise",
             "re_originate_route_type5",
         ]
+        self.negated_parsers = [
+            "auto_route_target",
+        ]
         self.complex_parsers = [
             "route_target_import",
             "route_target_export",
         ]
+        empty_wantd = None
 
     def execute_module(self):
         """ Execute the module
@@ -81,9 +84,11 @@ class L2vpn_evpn_vb(ResourceModule):
         wantd = self._l2vpn_list_to_dict(self.want)
         haved = self._l2vpn_list_to_dict(self.have)
 
+        self.empty_wantd = not wantd
+
         if self.state == "deleted":
             for k, hx in iteritems(deepcopy(haved)):
-                if not wantd:
+                if self.empty_wantd:
                     self.commands.append(self._tmplt.render(hx, "instance", True))
                     haved.pop(k)
                 elif k in wantd and self._compare_deleted_entries(want=wantd[k], have=hx):
@@ -113,6 +118,7 @@ class L2vpn_evpn_vb(ResourceModule):
     def _compare_entries(self, want, have):
         begin = len(self.commands)
         self._compare_lists(want, have)
+        self._compare_negated(want, have)
         self.compare(parsers=self.linear_parsers, want=want, have=have)
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "instance", False))
@@ -129,11 +135,18 @@ class L2vpn_evpn_vb(ResourceModule):
             for each in wdiff:
                 self.commands.append(self._tmplt.render({x: each}, x, False))
 
+    def _compare_negated(self, want, have):
+        for x in self.negated_parsers:
+            if x in want and x not in have:
+                self.compare(parsers=[x], want=want, have={x: True})
+            else:
+                self.compare(parsers=[x], want=want, have=have)
+
     def _dict_copy_deleted(self, want, have, x=""):
         hrec = {}
         have_dict = have if x == "" else get_from_dict(have, x)
         for k, hx in iteritems(have_dict):
-            if not want:
+            if self.empty_wantd:
                 hrec.update({k: hx})
                 continue
             dstr = k if x == "" else x + "." + k
@@ -144,7 +157,7 @@ class L2vpn_evpn_vb(ResourceModule):
                 hrec.update({k: self._dict_copy_deleted(want, have, dstr)})
             elif isinstance(wx, list):
                 wsect = set(wx).intersection(set(hx))
-                if wsect: 
+                if wsect:
                     hrec.update({k: sorted(list(wsect))})
             elif wx == hx:
                 hrec.update({k: hx})

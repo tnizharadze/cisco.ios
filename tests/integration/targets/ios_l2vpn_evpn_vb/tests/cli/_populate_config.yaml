@@ -1,5 +1,32 @@
 ---
+- name: Apply vlan configuraion #1
+  cisco.ios.ios_config:
+    lines:
+      - vlan 128
+
+- name: Apply vlan configuraion #2
+  cisco.ios.ios_config:
+    lines:
+      - member evpn-instance 128 vni 100128
+    parents: 
+      - vlan configuration 128
+
+- name: Apply interface configuraion #3
+  cisco.ios.ios_config:
+    lines:
+      - ip address 1.1.1.1 255.255.255.255
+    parents: 
+      - interface Loopback0
+
+- name: Apply router ID configuraion #4
+  cisco.ios.ios_config:
+    lines:
+      - router-id Loopback0
+    parents: 
+      - l2vpn evpn
+
 - name: Populate ios_l2vpn_evpn configuration
+  register: result
   cisco.ios.ios_l2vpn_evpn_vb:
     config: "{{ gathered['config'] }}"
     state: merged

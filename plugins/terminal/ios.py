@@ -57,6 +57,11 @@ class TerminalModule(TerminalBase):
         re.compile(rb"% General session commands not allowed under the address family", re.I),
         re.compile(rb"% BGP: Error initializing topology", re.I),
         re.compile(rb"%SNMP agent not enabled", re.I),
+        re.compile(rb"% Remove EVPN instance from VLAN before deletion", re.I),
+        re.compile(rb"% Failed to auto-generate new RD", re.I),
+        re.compile(rb"% Cannot remove current encapsulation", re.I),
+        re.compile(rb"% An 'import' and 'export' route-target must be configured", re.I),
+        re.compile(rb"% Cannot remove (import|export) route-target", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")

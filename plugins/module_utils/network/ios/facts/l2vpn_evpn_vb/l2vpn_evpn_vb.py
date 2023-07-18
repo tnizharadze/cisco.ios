@@ -27,6 +27,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l2vp
     L2vpn_evpn_vbArgs,
 )
 
+
 class L2vpn_evpn_vbFacts(object):
     """ The ios l2vpn_evpn_vb facts class
     """
@@ -63,7 +64,7 @@ class L2vpn_evpn_vbFacts(object):
         )
 
         facts['l2vpn_evpn_vb'] = params['config'] if 'config' in params else {}
-        
+
         ansible_facts['ansible_network_resources'].pop('l2vpn_evpn_vb', None)
         ansible_facts['ansible_network_resources'].update(facts)
 

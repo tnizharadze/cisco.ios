@@ -1,4 +1,13 @@
 ---
+- name: Remove vlan configuraion
+  ignore_errors: true
+  cisco.ios.ios_config:
+    lines:
+      - no vlan configuration 128
+      - no vlan 128
+      - no l2vpn evpn
+      - no interface Loopback0
+
 - name: Remove all ios_l2vpn_evpn configuration
   cisco.ios.ios_l2vpn_evpn_vb:
     state: deleted
