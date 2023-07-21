@@ -93,6 +93,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
     VlansFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l2vpn_evpn_ptp.l2vpn_evpn_ptp import (
+    L2vpn_evpn_ptpFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(default=Default, hardware=Hardware, interfaces=Interfaces, config=Config)
@@ -122,6 +125,7 @@ FACT_RESOURCE_SUBSETS = dict(
     service=ServiceFacts,
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
+    l2vpn_evpn_ptp=L2vpn_evpn_ptpFacts,
 )
 
 

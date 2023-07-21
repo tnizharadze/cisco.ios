@@ -1,0 +1,13 @@
+---
+- name: Remove all ios_l2vpn_evpn_ptp configuration
+  cisco.ios.ios_l2vpn_evpn_ptp:
+    state: deleted
+
+- name: Remove SVI interfaces
+  ignore_errors: true 
+  cisco.ios.ios_config:
+    lines:
+      - "no interface Vlan10"
+      - "no interface Vlan11"
+      - "no interface Vlan12"
+      - "no interface Vlan14"

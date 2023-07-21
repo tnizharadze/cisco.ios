@@ -1,0 +1,14 @@
+---
+- name: Add SVI interfaces
+  cisco.ios.ios_config:
+    lines:
+      - "interface Vlan10"
+      - "interface Vlan11"
+      - "interface Vlan12"
+      - "interface Vlan14"
+
+- name: Populate ios_l2vpn_evpn_ptp configuration
+  register: result
+  cisco.ios.ios_l2vpn_evpn_ptp:
+    config: "{{ gathered['config'] }}"
+    state: merged

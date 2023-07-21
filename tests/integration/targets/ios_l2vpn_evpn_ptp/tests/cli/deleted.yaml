@@ -1,0 +1,63 @@
+---
+- ansible.builtin.debug:
+    msg: START Deleted integration state for ios_l2vpn_evpn_ptp ansible_connection={{ ansible_connection }}
+
+- block:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
+
+    - name: Delete provided ios_l2vpn_evpn_ptp configuration
+      register: result
+      cisco.ios.ios_l2vpn_evpn_ptp: &id001
+        config:
+          - instance: "123"
+            rd: "222:222"
+            auto_route_target: false
+            route_target_import:
+              - "33:44"
+            route_target_export:
+              - "33:44"
+            vpws_context:
+              - context: "TEST"
+                service:
+                  target: "44"
+                  source: "77"
+                member: "Vlan10"
+                remote_link_failure_notification: true
+              - context: "TEST2"
+                member: "Vlan11"
+                remote_link_failure_notification: true
+                shutdown: true
+          - instance: "124"
+            route_target_import:
+              - "43:45"
+              - "45:55"
+            route_target_export:
+              - "43:45"
+              - "45:55"
+            vpws_context:
+              - context: "TEST3"
+                member: "Vlan12"
+                remote_link_failure_notification: true
+                shutdown: true
+              - context: "TEST4"
+                member: "Vlan14"
+                remote_link_failure_notification: true
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Delete provided ios_l2vpn_evpn_ptp configuration (idempotent)
+      register: result
+      cisco.ios.ios_l2vpn_evpn_ptp: *id001
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

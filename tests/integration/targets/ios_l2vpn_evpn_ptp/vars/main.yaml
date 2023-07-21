@@ -1,0 +1,169 @@
+---
+gathered:
+  config:
+    - instance: "123"
+      rd: "222:222"
+      auto_route_target: false
+      route_target_import:
+        - "33:44"
+      route_target_export:
+        - "33:44"
+      vpws_context:
+        - context: "TEST"
+          service:
+            target: "44"
+            source: "77"
+          member: "Vlan10"
+          remote_link_failure_notification: true
+        - context: "TEST2"
+          member: "Vlan11"
+          remote_link_failure_notification: true
+          shutdown: true
+    - instance: "124"
+      rd: "333:333"
+      auto_route_target: true
+      route_target_import:
+        - "43:45"
+        - "45:55"
+      route_target_export:
+        - "43:45"
+        - "45:55"
+      vpws_context:
+        - context: "TEST3"
+          member: "Vlan12"
+          remote_link_failure_notification: true
+          shutdown: true
+        - context: "TEST4"
+          service:
+            target: "55"
+            source: "55"
+          member: "Vlan14"
+          remote_link_failure_notification: true
+rendered:
+  commands:
+    - "l2vpn evpn instance 123 point-to-point"
+    - "rd 222:222"
+    - "route-target export 33:44"
+    - "route-target import 33:44"
+    - "no auto-route-target"
+    - "vpws context TEST"
+    - "service target 44 source 77"
+    - "member Vlan10"
+    - "remote link failure notification"
+    - "exit"
+    - "vpws context TEST2"
+    - "member Vlan11"
+    - "remote link failure notification"
+    - "shutdown"
+    - "exit"
+    - "l2vpn evpn instance 124 point-to-point"
+    - "rd 333:333"
+    - "route-target export 43:45"
+    - "route-target import 43:45"
+    - "route-target export 45:55"
+    - "route-target import 45:55"
+    - "vpws context TEST3"
+    - "member Vlan12"
+    - "remote link failure notification"
+    - "shutdown"
+    - "exit"
+    - "vpws context TEST4"
+    - "service target 55 source 55"
+    - "member Vlan14"
+    - "remote link failure notification"
+    - "exit"
+    - "exit"
+merged:
+  commands:
+    - "l2vpn evpn instance 124 point-to-point"
+    - "route-target export 88:88"
+    - "route-target import 88:88"
+    - "exit"
+  after:
+    - instance: "123"
+      rd: "222:222"
+      auto_route_target: false
+      route_target_import:
+        - "33:44"
+      route_target_export:
+        - "33:44"
+      vpws_context:
+        - context: "TEST"
+          service:
+            target: "44"
+            source: "77"
+          member: "Vlan10"
+          remote_link_failure_notification: true
+        - context: "TEST2"
+          member: "Vlan11"
+          remote_link_failure_notification: true
+          shutdown: true
+    - instance: "124"
+      rd: "333:333"
+      auto_route_target: true
+      route_target_import:
+        - "43:45"
+        - "45:55"
+        - "88:88"
+      route_target_export:
+        - "43:45"
+        - "45:55"
+        - "88:88"
+      vpws_context:
+        - context: "TEST3"
+          member: "Vlan12"
+          remote_link_failure_notification: true
+          shutdown: true
+        - context: "TEST4"
+          service:
+            target: "55"
+            source: "55"
+          member: "Vlan14"
+          remote_link_failure_notification: true
+replaced:
+  commands:
+    - answer: "yes"
+      command: "no l2vpn evpn instance 123 point-to-point"
+      prompt: "yes/no"
+    - "l2vpn evpn instance 124 point-to-point"
+    - "no route-target import 45:55"
+    - "no route-target export 45:55"
+    - "no auto-route-target"
+    - "vpws context TEST3"
+    - "no remote link failure notification"
+    - "no shutdown"
+    - "exit"
+    - "exit"
+  after:
+    - instance: "124"
+      auto_route_target: false
+      rd: "333:333"
+      route_target_export:
+        - "43:45"
+      route_target_import:
+        - "43:45"
+      vpws_context:
+        - context: "TEST3"
+          member: "Vlan12"
+        - context: "TEST4"
+          member: "Vlan14"
+          remote_link_failure_notification: true
+          service:
+            source: "55"
+            target: "55"
+deleted:
+  commands:
+    - answer: "yes"
+      command: "no l2vpn evpn instance 123 point-to-point"
+      prompt: "yes/no"
+    - "l2vpn evpn instance 124 point-to-point"
+    - "no route-target import 43:45"
+    - "no route-target import 45:55"
+    - "no route-target export 43:45"
+    - "no route-target export 45:55"
+    - "no vpws context TEST3"
+    - "vpws context TEST4"
+    - "no member Vlan14"
+    - "no remote link failure notification"
+    - "exit"
+    - "exit"

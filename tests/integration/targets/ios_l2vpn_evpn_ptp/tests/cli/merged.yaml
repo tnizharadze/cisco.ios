@@ -1,0 +1,74 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_l2vpn_evpn_ptp merged state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Merge provided ios_l2vpn_evpn_ptp configuration with device configuration
+      register: result
+      cisco.ios.ios_l2vpn_evpn_ptp: &id001
+        config:
+        - instance: "124"
+          rd: "333:333"
+          auto_route_target: true
+          route_target_import:
+            - "88:88"
+          route_target_export:
+            - "88:88"
+          vpws_context:
+            - context: "TEST3"
+              member: "Vlan12"
+              remote_link_failure_notification: true
+              shutdown: true
+            - context: "TEST4"
+              service:
+                target: "55"
+                source: "55"
+              member: "Vlan14"
+              remote_link_failure_notification: true
+        state: merged
+
+    - name: Assert that correct set of ios_l2vpn_evpn_ptp commands were generated
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - set_fact:
+        sorted_result: |-
+          [
+          {% for each in result["after"] %}
+          {
+            {% for key, value in each.items() %}
+            "{{ key }}":
+            {% if value is string %}
+            "{{ value }}"
+            {% elif value is iterable and value is not mapping and key != "vpws_context" %}
+            {{ value | sort }}
+            {% else %}
+            {{ value }}
+            {% endif %}
+            ,
+            {% endfor %}
+          },
+          {% endfor %}
+          ]
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == sorted_result
+
+    - name: Merge provided ios_l2vpn_evpn_vb_ptp configuration with device configuration (idempotent)
+      register: result
+      cisco.ios.ios_l2vpn_evpn_ptp: *id001
+
+    - name: Assert that the previous task has no changes made
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

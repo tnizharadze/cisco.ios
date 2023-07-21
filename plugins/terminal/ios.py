@@ -57,6 +57,14 @@ class TerminalModule(TerminalBase):
         re.compile(rb"% General session commands not allowed under the address family", re.I),
         re.compile(rb"% BGP: Error initializing topology", re.I),
         re.compile(rb"%SNMP agent not enabled", re.I),
+        re.compile(rb"% Only one member allowed in a EVPN VPWS context", re.I),
+        re.compile(rb"% This circuit is already a member of EVPN context (\S+)", re.I),
+        re.compile(rb"% Target ID (\d+) already in use in VPWS context (\S+)", re.I),
+        re.compile(rb"% EVPN service must be configured", re.I),
+        re.compile(rb"% Failed to auto-generate new RD", re.I),
+        re.compile(rb"% Router ID is not set, cannot auto-generate RD", re.I),
+        re.compile(rb"% An 'import' and 'export' route-target must be configured", re.I),
+        re.compile(rb"% Cannot remove (import|export) route-target", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")

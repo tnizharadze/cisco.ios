@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_l2vpn_evpn_ptp rendered integration tests ansible_connection={{ ansible_connection }}
+
+- name: Render the commands for provided ios_l2vpn_evpn_ptp configuration
+  register: result
+  cisco.ios.ios_l2vpn_evpn_ptp:
+    config: "{{ gathered['config'] }}"
+    state: rendered
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.rendered|symmetric_difference(rendered.commands) == []
