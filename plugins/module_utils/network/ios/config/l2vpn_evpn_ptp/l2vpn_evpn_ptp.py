@@ -85,7 +85,7 @@ class L2vpn_evpn_ptp(ResourceModule):
         """
         wantd = self._l2vpn_list_to_dict(self.want)
         haved = self._l2vpn_list_to_dict(self.have)
-#        raise Exception([wantd, haved])
+
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
