@@ -57,6 +57,17 @@ class TerminalModule(TerminalBase):
         re.compile(rb"% General session commands not allowed under the address family", re.I),
         re.compile(rb"% BGP: Error initializing topology", re.I),
         re.compile(rb"%SNMP agent not enabled", re.I),
+        re.compile(rb"% VFI \S+ must be configured with a valid vpn id first", re.I),
+        re.compile(rb"% VFI member is already associated with different bd id \S+", re.I),
+        re.compile(rb"% Only one VFI member allowed in the bridge-domain", re.I),
+        re.compile(rb"%Access PW member configuration exists - needs to be removed", re.I),
+        re.compile(rb"A VFI member must be configured first", re.I),
+        re.compile(rb"% PW interface is not explicitly configured", re.I),
+        re.compile(rb"", re.I),
+        re.compile(rb"", re.I),
+        re.compile(rb"", re.I),
+        re.compile(rb"", re.I),
+        re.compile(rb"", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")
