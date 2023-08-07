@@ -60,8 +60,11 @@ class Vlan_configurationFacts(object):
 
         objs = vlan_configuration_parser.parse()
         for k, val in iteritems(objs):
-            if "member" in val and "pseudowire" in val["member"]:
-                val["member"]["pseudowire"] = list(val["member"]["pseudowire"].values())
+            if "member" in val:
+                if "pseudowire" in val["member"]:
+                    val["member"]["pseudowire"] = list(val["member"]["pseudowire"].values())
+                if "ip_peer" in val["member"]:
+                    val["member"]["ip_peer"] = list(val["member"]["ip_peer"].values())
         objs = list(objs.values())
 
         params = utils.remove_empties(

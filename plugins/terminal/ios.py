@@ -63,11 +63,13 @@ class TerminalModule(TerminalBase):
         re.compile(rb"%Access PW member configuration exists - needs to be removed", re.I),
         re.compile(rb"A VFI member must be configured first", re.I),
         re.compile(rb"% PW interface is not explicitly configured", re.I),
-        re.compile(rb"", re.I),
-        re.compile(rb"", re.I),
-        re.compile(rb"", re.I),
-        re.compile(rb"", re.I),
-        re.compile(rb"", re.I),
+        re.compile(rb"% Xconnect PW member is configured with a specified interface", re.I),
+        re.compile(rb"% Failed to add pseudowire member", re.I),
+        re.compile(rb"% VLAN with VFI member not compatible with EVPN", re.I),
+        re.compile(rb"% EVPN Instance \S+ is already a member of this VLAN", re.I),
+        re.compile(rb"% VLAN with VxLAN member not compatible with EVPN", re.I),
+        re.compile(rb"Please config flow-export destination ip address", re.I),
+        re.compile(rb"% Policy \S+ not defined for the feature", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")

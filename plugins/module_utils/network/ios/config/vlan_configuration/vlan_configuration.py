@@ -7,6 +7,7 @@
 
 from __future__ import absolute_import, division, print_function
 from telnetlib import NOP
+from pickle import TRUE
 
 __metaclass__ = type
 
@@ -50,22 +51,36 @@ class Vlan_configuration(ResourceModule):
             tmplt=Vlan_configurationTemplate(),
         )
         self.sequence_parsers = [
-            "instance",
-            "context",
+            "vlan",
+        ]
+        self.dict_parsers = [
+            "member.pseudowire",
+            "member.ip_peer",
         ]
         self.linear_parsers = [
-            "rd",
-            "service",
-            "member",
-            "remote_link_failure_notification",
-            "shutdown",
+            "member.vfi",
+            "member.access_vfi",
+            "member.vni",
+            "member.evpn",
+            "ipv6.dhcp.ldra_attach_policy",
+            "et_analytics_enable",
         ]
-        self.negated_parsers = [
-            "auto_route_target",
+        self.dual_parsers = [
+            "device_tracking",
+            "ipv6.destination_guard",
+            "ipv6.dhcp.guard",
+            "ipv6.nd.ra_throttler",
+            "ipv6.nd.raguard",
+            "ipv6.nd.suppress",
         ]
-        self.list_parsers = [
-            "route_target_import",
-            "route_target_export",
+        self.mdns_parsers = [
+            "mdns_sd_gateway.active_query_timer",
+            "mdns_sd_gateway.transport",
+            "mdns_sd_gateway.service_inst_suffix",
+            "mdns_sd_gateway.service_mdns_query",
+            "mdns_sd_gateway.source_interface",
+            "mdns_sd_gateway.sdg_agent",
+            "mdns_sd_gateway.service_policy",
         ]
 
     def execute_module(self):
@@ -83,8 +98,8 @@ class Vlan_configuration(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = self._l2vpn_list_to_dict(self.want)
-        haved = self._l2vpn_list_to_dict(self.have)
+        wantd = self._list_to_dict(self.want)
+        haved = self._list_to_dict(self.have)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -98,81 +113,6 @@ class Vlan_configuration(ResourceModule):
         if wantd:
             self._compare_config(wantd, haved)
 
-    def _delete_entries(self, haved):
-        for hk, have in iteritems(haved):
-            current = ""
-            for x in self.sequence_parsers:
-                if x in have:
-                    current = x
-            if "_remove" in have:
-                self.commands.append(self._tmplt.render(have, current, True))
-                if current == "instance":
-                    cmd = self.commands.pop()
-                    self.commands.append({"command": cmd, "prompt": "yes/no", "answer": "yes"})
-                continue
-            begin = len(self.commands)
-            self._compare_lists({}, have)
-            self._compare_negated({}, have)
-            self.compare(parsers=self.linear_parsers, want={}, have=have)
-            if "vpws_context" in have:
-                self._delete_entries(have["vpws_context"])
-            if len(self.commands) != begin:
-                self.commands.insert(begin, self._tmplt.render(have, current, False))
-                self.commands.append("exit")
-
-    def _compare_config(self, wantd, haved):
-        for hk, have in iteritems(haved):
-            current = ""
-            for x in self.sequence_parsers:
-                if x in have:
-                    current = x
-            if hk not in wantd:
-                self.commands.append(self._tmplt.render(have, current, True))
-                if current == "instance":
-                    cmd = self.commands.pop()
-                    self.commands.append({"command": cmd, "prompt": "yes/no", "answer": "yes"})
-        for wk, want in iteritems(wantd):
-            current = ""
-            for x in self.sequence_parsers:
-                if x in want:
-                    current = x
-            have = haved.get(wk) or {}
-            begin = len(self.commands)
-            self._compare_lists(want, have)
-            self._compare_negated(want, have)
-            self._compare_member(want, have)
-            self.compare(parsers=self.linear_parsers, want=want, have=have)
-            if "vpws_context" in want:
-                self._compare_config(want["vpws_context"], have.get("vpws_context") or {})
-            if len(self.commands) != begin:
-                self.commands.insert(begin, self._tmplt.render(want, current, False))
-                self.commands.append("exit")
-
-    def _compare_lists(self, want, have):
-        for x in self.list_parsers:
-            wx = set(get_from_dict(want, x) or [])
-            hx = set(get_from_dict(have, x) or [])
-            wdiff = sorted(list(wx - hx))
-            hdiff = sorted(list(hx - wx))
-            for each in hdiff:
-                self.commands.append(self._tmplt.render({x: each}, x, True))
-            for each in wdiff:
-                self.commands.append(self._tmplt.render({x: each}, x, False))
-
-    def _compare_negated(self, want, have):
-        for x in self.negated_parsers:
-            if x in want and x not in have:
-                self.compare(parsers=[x], want=want, have={x: True})
-            else:
-                self.compare(parsers=[x], want=want, have=have)
-
-    def _compare_member(self, want, have):
-        # avoid IOS error "Only one member allowed in a EVPN VPWS context"
-        # by deleting have["member"]
-        if "member" in want and "member" in have \
-                and want["member"] != have["member"]:
-            self.compare(parsers=["member"], want={}, have=have)
-
     def _dict_copy_deleted(self, want, have, x=""):
         hrec = {}
         have_dict = have if x == "" else get_from_dict(have, x)
@@ -183,30 +123,117 @@ class Vlan_configuration(ResourceModule):
                 hrec[k].update({"_remove": True})
                 continue
             dstr = k if x == "" else x + "." + k
+            #if k == "ip_peer":
+            #    import pydevd; pydevd.settrace()
             wx = get_from_dict(want, dstr)
             if wx is None:
                 continue
-            if isinstance(wx, dict):
-                hrec.update({k: self._dict_copy_deleted(want, have, dstr)})
-            elif isinstance(wx, list):
-                wsect = set(wx).intersection(set(hx))
-                if wsect:
-                    hrec.update({k: sorted(list(wsect))})
-            elif k in self.sequence_parsers and (have_dict == want_dict):
-                return {k: hx, "_remove": True}
-            elif k in self.negated_parsers and hx and wx:
+            dp = False
+            for i in self.dual_parsers:
+                if i in dstr: dp = True
+            if dp and wx == hx:
+                hrec.update({k: hx})
+            elif dp:
                 continue
+            elif k == "mdns_sd_gateway" and wx == hx:
+                hrec.update({k: {"enable": True}})
+            elif isinstance(wx, dict):
+                hrec.update({k: self._dict_copy_deleted(want, have, dstr)})
+            elif k == "vlan" and (have_dict == want_dict):
+                return {k: hx, "_remove": True}
             elif wx == hx:
                 hrec.update({k: hx})
         return hrec
 
-    def _l2vpn_list_to_dict(self, entry):
-        for x in entry:
-            for k, val in iteritems(x):
-                if isinstance(val, list):
-                    if k == "vpws_context":
-                        x["vpws_context"] = {i["context"]: i for i in val}
-                    else:
-                        x[k] = sorted(val)
-        entry = {x["instance"]: x for x in entry}
+    def _delete_entries(self, haved):
+        for hk, have in iteritems(haved):
+            if "_remove" in have:
+                self.commands.append(self._tmplt.render(have, "vlan", True))
+                continue
+            begin = len(self.commands)
+            for x in self.dict_parsers:
+                hx = get_from_dict(have, x) or {}
+                self._compare_dict({}, hx, x)
+            self.compare(parsers=self.linear_parsers, want={}, have=have)
+            self._compare_dual({}, have)
+            want = {}
+            if "mdns_sd_gateway" in have and len(have["mdns_sd_gateway"]) > 1:
+                have["mdns_sd_gateway"].pop("enable")
+                want = self._construct_dict("mdns_sd_gateway", {"enable": True})
+            self._compare_mdns(want, have)
+            if len(self.commands) != begin:
+                self.commands.insert(begin, self._tmplt.render(have, "vlan", False))
+                self.commands.append("exit")
+
+    def _compare_config(self, wantd, haved):
+        for hk, have in iteritems(haved):
+            if hk not in wantd:
+                self.commands.append(self._tmplt.render(have, "vlan", True))
+        for wk, want in iteritems(wantd):
+            have = haved.get(wk) or {}
+            begin = len(self.commands)
+            for x in self.dict_parsers:
+                wx = get_from_dict(want, x) or {}
+                hx = get_from_dict(have, x) or {}
+                self._compare_dict(wx, hx, x)
+            self.compare(parsers=self.linear_parsers, want=want, have=have)
+            self._compare_dual(want, have)
+            self._compare_mdns(want, have)
+            if len(self.commands) != begin:
+                self.commands.insert(begin, self._tmplt.render(want, "vlan", False))
+                self.commands.append("exit")
+
+    def _compare_dual(self, want, have):
+        for x in self.dual_parsers:
+            wx = get_from_dict(want, x) or {}
+            hx = get_from_dict(have, x) or {}
+            if wx == hx: continue
+            if wx and wx["enable"]:
+                self.compare(parsers=[x+".enable"], want=want, have={})
+            else:
+                self.compare(parsers=[x+".enable"], want=want, have=have)
+
+    def _compare_mdns(self, want, have):
+        mdns_len = len(self.commands)
+        self.compare(parsers=["mdns_sd_gateway.enable"], want=want, have=have)
+        if mdns_len == len(self.commands):
+            if "mdns_sd_gateway" in want and want["mdns_sd_gateway"]["enable"]:
+                mdns_len = len(self.commands)
+                self.compare(parsers=self.mdns_parsers, want=want, have=have)
+                if mdns_len != len(self.commands):
+                    self.commands.insert(mdns_len, self._tmplt.render(want, "mdns_sd_gateway.enable", False))
+                    self.commands.append("exit")
+        elif "mdns_sd_gateway" in want and want["mdns_sd_gateway"]["enable"]:
+                self.compare(parsers=self.mdns_parsers, want=want, have=have)
+                self.commands.append("exit")
+
+    def _compare_dict(self, want, have, x):
+        have_remove = list(set(have.keys()).difference(set(want.keys())))
+        for each in have_remove:
+           hx_comp = self._construct_dict(x, have[each])
+           self.compare(parsers=[x], want={}, have=hx_comp)
+        for wk, wx in iteritems(want):
+            hx = get_from_dict(have, wk) or {}
+            wx_comp = self._construct_dict(x, wx)
+            hx_comp = self._construct_dict(x, hx)
+            self.compare(parsers=[x], want=wx_comp, have=hx_comp)
+
+    def _construct_dict(self, vector, value):
+        keys = vector.split(".")
+        res = {}; a = res
+        for key in keys:
+            a.update({key:{}})
+            a = a.get(key)
+        a.update(value)
+        return res
+
+    def _list_to_dict(self, entry):
+        for x in entry: # vlan config
+            for k, val in iteritems(x): # member in k
+                if k == "member":
+                    if "pseudowire" in val and isinstance(val["pseudowire"], list):
+                        val["pseudowire"] = {i["pwnumber"]: i for i in val["pseudowire"]}
+                    if "ip_peer" in val  and isinstance(val["ip_peer"], list):
+                        val["ip_peer"] = {(i["address"]+"_"+i["vc_id"]).replace(".","_"): i for i in val["ip_peer"]}
+        entry = {x["vlan"]: x for x in entry}
         return entry

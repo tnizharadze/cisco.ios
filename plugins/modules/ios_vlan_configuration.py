@@ -37,6 +37,7 @@ options:
       member:
         description: Member configuration 
         type: dict
+        mutually_exclusive: [["vfi", "access_vfi"],["vni","vfi","evpn"]]
         suboptions:
           vfi:
             description: Virtual Forwarding Instance (VFI) member name
@@ -47,11 +48,10 @@ options:
           vni:
             description: VxLan vni
             type: str
-          ipv4:
+          ip_peer:
             description: L2VPN peers configuration
             type: list
             elements: dict
-            required_one_of: [["encapsulation_mpls","template"]]
             required_together: [["address", "vc_id"]]
             suboptions:
               address:
@@ -60,9 +60,6 @@ options:
               vc_id:
                 description: VC ID value
                 type: str
-              encapsulation_mpls:
-                description: Set MPLS encapsulation
-                type: bool
               template:
                 description: Template to use for encapsulation and protocol configuration
                 type: str
@@ -71,7 +68,6 @@ options:
             type: list
             elements: dict
             required_together: [["address", "vc_id"]]
-            mutually_exclusive: [["encapsulation_mpls","template"]]
             suboptions:
               pwnumber:
                 description: <1-100000> Pseudowire interface number
@@ -82,9 +78,6 @@ options:
               vc_id:
                 description: VC ID value
                 type: str
-              encapsulation_mpls:
-                description: Set MPLS encapsulation
-                type: bool
               template:
                 description: Template to use for encapsulation and protocol configuration
                 type: str
@@ -100,10 +93,17 @@ options:
               vni:
                 description: <4096-16777215>  VxLAN VNI value
                 type: str
+              protected:
+                description: Enable local peer to peer blocking
+                type: bool
       mdns_sd_gateway:
         description: Enable mDNS config on vlan/interface
         type: dict
         suboptions:
+          enabled:
+            description: Enable mDNS gateway on vlan/interface
+            type: bool
+            required: true
           active_query_timer:
             description: mDNS Active Query Timer value
             type: str
@@ -133,7 +133,7 @@ options:
       device_tracking:
         description: Configure device-tracking on the vlan
         type: dict
-        required_by: ["attach_policy": "enable"]
+        required_by: {"attach_policy": "enable"}
         suboptions:
           enable:
             description: Enable device tracking
@@ -148,7 +148,7 @@ options:
           destination_guard:
             description: Configure destination guard on the vlan
             type: dict
-            required_by: ["attach_policy": "enable"]
+            required_by: {"attach_policy": "enable"}
             suboptions:
               enable:
                 description: Enable destination guard on the vlan
@@ -163,7 +163,7 @@ options:
               guard:
                 description: Configure IPv6 DHCP guard on the vlan
                 type: dict
-                required_by: ["attach_policy": "enable"]
+                required_by: {"attach_policy": "enable"}
                 suboptions:
                   enable:
                     description: Enable IPv6 DHCP guard on the vlan
@@ -182,7 +182,7 @@ options:
               ra_throttler:
                 description: Configure RA throttler on the vlan
                 type: dict
-                required_by: ["attach_policy": "enable"]
+                required_by: {"attach_policy": "enable"}
                 suboptions:
                   enable:
                     description: Enable RA throttler on the vlan
@@ -193,7 +193,7 @@ options:
               raguard:
                 description: Configure ipv6 raguard on the vlan
                 type: dict
-                required_by: ["attach_policy": "enable"]
+                required_by: {"attach_policy": "enable"}
                 suboptions:
                   enable:
                     description: Enable ipv6 raguard on the vlan
@@ -204,7 +204,7 @@ options:
               suppress:
                 description: Configure ND suppress on the vlan
                 type: dict
-                required_by: ["attach_policy": "enable"]
+                required_by: {"attach_policy": "enable"}
                 suboptions:
                   enable:
                     description: Enable ND suppress on the vlan

@@ -40,23 +40,20 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                 "member": {
                     "type": "dict",
                     "mutually_exclusive": [
-                        ["vfi", "access_vfi"]
+                        ["vfi", "access_vfi"],
+                        ["vni","vfi","evpn"],
                     ],
                     "options": {
                         "vfi": {"type": "str"},
                         "access_vfi": {"type": "str"},
                         "vni": {"type": "str"},
-                        "ipv4": {
+                        "ip_peer": {
                             "type": "list",
                             "elements": "dict",
-                            "required_one_of": [
-                                ["encapsulation_mpls", "template"]
-                            ],
                             "required_together": [["address", "vc_id"]],
                             "options": {
                                 "address": {"type": "str"},
                                 "vc_id": {"type": "str"},
-                                "encapsulation_mpls": {"type": "bool"},
                                 "template": {"type": "str"},
                             },
                         },
@@ -64,14 +61,10 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                             "type": "list",
                             "elements": "dict",
                             "required_together": [["address", "vc_id"]],
-                            "mutually_exclusive": [
-                                ["encapsulation_mpls", "template"]
-                            ],
                             "options": {
                                 "pwnumber": {"type": "str"},
                                 "address": {"type": "str"},
                                 "vc_id": {"type": "str"},
-                                "encapsulation_mpls": {"type": "bool"},
                                 "template": {"type": "str"},
                             },
                         },
@@ -81,6 +74,7 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "instance": {"type": "str", "required": True},
                                 "vni": {"type": "str"},
+                                "protected": {"type": "bool"},
                             },
                         },
                     },
@@ -88,6 +82,7 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                 "mdns_sd_gateway": {
                     "type": "dict",
                     "options": {
+                        "enable": {"type": "bool", "required": True},
                         "active_query_timer": {"type": "str"},
                         "transport": {
                             "type": "str",
@@ -106,7 +101,7 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                 "et_analytics_enable": {"type": "bool"},
                 "device_tracking": {
                     "type": "dict",
-                    "required_by": [{"attach_policy": "enable"}],
+                    "required_by": {"attach_policy": "enable"},
                     "options": {
                         "enable": {"type": "bool"},
                         "attach_policy": {"type": "str"},
@@ -117,7 +112,7 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                     "options": {
                         "destination_guard": {
                             "type": "dict",
-                            "required_by": [{"attach_policy": "enable"}],
+                            "required_by": {"attach_policy": "enable"},
                             "options": {
                                 "enable": {"type": "bool"},
                                 "attach_policy": {"type": "str"},
@@ -128,7 +123,7 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "guard": {
                                     "type": "dict",
-                                    "required_by": [{"attach_policy": "enable"}],
+                                    "required_by": {"attach_policy": "enable"},
                                     "options": {
                                         "enable": {"type": "bool"},
                                         "attach_policy": {"type": "str"},
@@ -148,7 +143,7 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "ra_throttler": {
                                     "type": "dict",
-                                    "required_by": [{"attach_policy": "enable"}],
+                                    "required_by": {"attach_policy": "enable"},
                                     "options": {
                                         "enable": {"type": "bool"},
                                         "attach_policy": {"type": "str"},
@@ -156,7 +151,7 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                                 },
                                 "raguard": {
                                     "type": "dict",
-                                    "required_by": [{"attach_policy": "enable"}],
+                                    "required_by": {"attach_policy": "enable"},
                                     "options": {
                                         "enable": {"type": "bool"},
                                         "attach_policy": {"type": "str"},
@@ -164,7 +159,7 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                                 },
                                 "suppress": {
                                     "type": "dict",
-                                    "required_by": [{"attach_policy": "enable"}],
+                                    "required_by": {"attach_policy": "enable"},
                                     "options": {
                                         "enable": {"type": "bool"},
                                         "attach_policy": {"type": "str"},
