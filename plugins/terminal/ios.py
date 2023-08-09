@@ -70,6 +70,7 @@ class TerminalModule(TerminalBase):
         re.compile(rb"% VLAN with VxLAN member not compatible with EVPN", re.I),
         re.compile(rb"Please config flow-export destination ip address", re.I),
         re.compile(rb"% Policy \S+ not defined for the feature", re.I),
+        re.compile(rb"% VPN id \S+ already in use", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")

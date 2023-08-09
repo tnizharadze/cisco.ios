@@ -123,8 +123,6 @@ class Vlan_configuration(ResourceModule):
                 hrec[k].update({"_remove": True})
                 continue
             dstr = k if x == "" else x + "." + k
-            #if k == "ip_peer":
-            #    import pydevd; pydevd.settrace()
             wx = get_from_dict(want, dstr)
             if wx is None:
                 continue
@@ -139,7 +137,7 @@ class Vlan_configuration(ResourceModule):
                 hrec.update({k: {"enable": True}})
             elif isinstance(wx, dict):
                 hrec.update({k: self._dict_copy_deleted(want, have, dstr)})
-            elif k == "vlan" and (have_dict == want_dict):
+            elif k == "vlan" and (have_dict == want_dict or len(want_dict) == 1):
                 return {k: hx, "_remove": True}
             elif wx == hx:
                 hrec.update({k: hx})
@@ -172,11 +170,11 @@ class Vlan_configuration(ResourceModule):
         for wk, want in iteritems(wantd):
             have = haved.get(wk) or {}
             begin = len(self.commands)
+            self.compare(parsers=self.linear_parsers, want=want, have=have)
             for x in self.dict_parsers:
                 wx = get_from_dict(want, x) or {}
                 hx = get_from_dict(have, x) or {}
                 self._compare_dict(wx, hx, x)
-            self.compare(parsers=self.linear_parsers, want=want, have=have)
             self._compare_dual(want, have)
             self._compare_mdns(want, have)
             if len(self.commands) != begin:
@@ -233,7 +231,7 @@ class Vlan_configuration(ResourceModule):
                 if k == "member":
                     if "pseudowire" in val and isinstance(val["pseudowire"], list):
                         val["pseudowire"] = {i["pwnumber"]: i for i in val["pseudowire"]}
-                    if "ip_peer" in val  and isinstance(val["ip_peer"], list):
+                    if "ip_peer" in val and isinstance(val["ip_peer"], list):
                         val["ip_peer"] = {(i["address"]+"_"+i["vc_id"]).replace(".","_"): i for i in val["ip_peer"]}
         entry = {x["vlan"]: x for x in entry}
         return entry
