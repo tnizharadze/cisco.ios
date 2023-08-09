@@ -1,0 +1,41 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_l2vpn_evpn_vb gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Gather the existing ios_l2vpn_evpn_vb running configuration
+      register: result
+      cisco.ios.ios_l2vpn_evpn_vb:
+        state: gathered
+
+    - set_fact:
+        sorted_result: |-
+          [
+          {% for each in result["gathered"] %}
+          {
+            {% for key, value in each.items() %}
+            "{{ key }}":
+            {% if value is string %}
+              "{{ value }}"
+            {% elif value is iterable and value is not mapping %}
+              {{ value | sort }}
+            {% else %}
+              {{ value }}
+            {% endif %}
+            ,
+            {% endfor %}
+          },
+          {% endfor %}
+          ]
+        
+    - name: Assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['config'] == sorted_result
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

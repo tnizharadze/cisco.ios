@@ -1,0 +1,32 @@
+---
+- name: Apply base configuraion #1
+  cisco.ios.ios_config:
+    lines:
+      - ip routing
+      - vlan 10-12
+      - l2 router-id 192.168.1.100
+      - ipv6 nd ra-throttler policy NDRA_POLICY
+      - ipv6 nd suppress policy NDSUPP_POLICY
+      - ipv6 dhcp guard policy DHCP_POLICY
+      - ipv6 nd raguard policy NDGUARD_POLICY
+      - mdns-sd service-policy MDNS_POLICY
+
+- name: Apply base configuraion #2
+  cisco.ios.ios_config:
+    lines:
+      - vpn id 100100
+    parents: 
+      - l2vpn vfi context OVERLAY
+
+- name: Apply base configuraion #3
+  cisco.ios.ios_config:
+    lines:
+      - ip flow-export destination 10.10.10.10 65535
+    parents: 
+      - et-analytics
+
+- name: Populate ios_vlan_configuration configuration
+  register: result
+  cisco.ios.ios_vlan_configuration:
+    config: "{{ gathered['config'] }}"
+    state: merged
