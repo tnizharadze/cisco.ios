@@ -28,14 +28,14 @@ options:
     type: dict
     suboptions:
       logging:
-        description: Default Logging configuretion.
+        description: Default Logging configuration.
         type: dict
         suboptions:
           pseudowire_status:
-            description: Enable L2VPN Pseudowire logging
+            description: Enable L2VPN pseudowire logging
             type: bool
           redundancy:
-            description: To enable system message log (syslog) reporting of the status redundancy group
+            description: Enable system message log (syslog) reporting of the status redundancy group
             type: bool
           vc_state:
             description: Enable EVPN-VPWS for logging
@@ -120,7 +120,7 @@ EXAMPLES = """
 
 # Before state:
 # -------------
-# cat _parsed.cfg
+# file _parsed.cfg:
 # l2vpn
 #  logging pseudowire status
 #  logging redundancy
@@ -274,7 +274,7 @@ EXAMPLES = """
 #  router-id 4.4.4.4
 #  shutdown
 
-- name: Delete provided spanning tree configuration
+- name: Delete provided l2vpn configuration
   cisco.ios.ios_l2vpn:
     config:
       logging:
@@ -308,7 +308,7 @@ EXAMPLES = """
 RETURN = """
 before:
   description: The configuration prior to the module execution.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  returned: when I(state) is C(merged), C(replaced), C(deleted) or C(purged)
   type: dict
   sample: >
     This output will always be in the same format as the
@@ -322,7 +322,7 @@ after:
     module argspec.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  returned: when I(state) is C(merged), C(replaced), C(deleted) or C(purged)
   type: list
   sample:
     - l2vpn
@@ -377,7 +377,6 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
-            ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],
