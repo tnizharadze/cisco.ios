@@ -1,0 +1,109 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vlan_configuration replaced state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace provided ios_vlan_configuration configuration
+      register: result
+      cisco.ios.ios_vlan_configuration: &id001
+        config:
+        - vlan: "10"
+          member:
+            access_vfi: "OVERLAY"
+            vni: "6161"
+            pseudowire:
+              - pwnumber: "100"
+              - pwnumber: "23542"
+                address: "5.5.5.5"
+                vc_id: "342"
+              - pwnumber: "23423"
+            ip_peer:
+              - address: "5.5.5.5"
+                vc_id: "444"
+                template: sdsd
+              - address: "5.5.5.5"
+                vc_id: "123"
+              - address: "4.4.4.4"
+                vc_id: "123"
+                template: "RR"
+              - address: "4.4.4.4"
+                vc_id: "345"
+              - address: "4.4.4.4"
+                vc_id: "14342"
+              - address: "4.4.4.4"
+                vc_id: "423"
+          mdns_sd_gateway:
+            enable: false
+          device_tracking:
+            enable: false
+        - vlan: "11"
+          member:
+            vfi: "VPLSVFI"
+          ipv6:
+            destination_guard:
+              enable: true
+            dhcp:
+              guard:
+                enable: true
+            nd:
+              ra_throttler:
+                enable: true
+              raguard:
+                enable: true
+              suppress:
+                enable: false
+        - vlan: "12"
+          member:
+            evpn:
+              instance: "354"
+              vni: "500100"
+              protected: false
+          mdns_sd_gateway:
+            enable: true
+          ipv6:
+            destination_guard:
+              enable: false
+            dhcp:
+              guard:
+                enable: true
+            nd:
+              ra_throttler:
+                enable: true
+                attach_policy: "NDRA_POLICY"
+              raguard:
+                enable: true
+              suppress:
+                enable: false
+        state: replaced
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Convert configuration to dictionary
+      ansible.builtin.include_tasks: "{{ role_path }}/tests/cli/_convert_to_dict.yaml"
+      vars:
+        var_list:
+          - "{{ replaced['after'] }}"
+          - "{{ result['after'] }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - convert_dict['results'][0]['ansible_facts']['dict_res'] == convert_dict['results'][1]['ansible_facts']['dict_res'] 
+
+    - name: Replace provided ios_vlan_configuration configuration (idempotent)
+      register: result
+      cisco.ios.ios_vlan_configuration: *id001
+
+    - name: Assert that task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

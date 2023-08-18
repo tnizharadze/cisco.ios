@@ -1,0 +1,128 @@
+---
+- ansible.builtin.debug:
+    msg: START Deleted integration state for ios_vlan_configuration ansible_connection={{ ansible_connection }}
+
+- block:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
+
+    - name: Delete provided ios_vlan_configuration configuration
+      register: result
+      cisco.ios.ios_vlan_configuration: &id001
+        config:
+        - vlan: "10"
+          member:
+            access_vfi: "OVERLAY"
+            vni: "6060"
+            pseudowire:
+              - pwnumber: "100"
+              - pwnumber: "35"
+                address: "2.2.3.3"
+                vc_id: "123"
+              - pwnumber: "34"
+                address: "23.23.23.23"
+                vc_id: "123"
+              - pwnumber: "23542"
+                address: "5.5.5.5"
+                vc_id: "342"
+                template: "BFD"
+              - pwnumber: "23423"
+            ip_peer:
+              - address: "10.10.10.10"
+                vc_id: "123"
+              - address: "3.4.5.6"
+                vc_id: "123"
+              - address: "5.3.2.1"
+                vc_id: "123"
+                template: "DVFR"
+              - address: "5.5.5.5"
+                vc_id: "444"
+                template: sdsd
+              - address: "5.5.5.5"
+                vc_id: "123"
+              - address: "4.4.4.4"
+                vc_id: "123"
+                template: "RR"
+              - address: "4.4.4.4"
+                vc_id: "345"
+              - address: "4.4.4.4"
+                vc_id: "14342"
+                template: "TEST"
+              - address: "4.4.4.4"
+                vc_id: "423"
+          mdns_sd_gateway:
+            enable: true
+            active_query_timer: "44"
+            sdg_agent: "6.6.6.6"
+            service_inst_suffix: "TEST2"
+            service_mdns_query: "ptr"
+            service_policy: "MDNS_POLICY"
+            source_interface: "GigabitEthernet1/0/1"
+            transport: "both"
+          device_tracking:
+            enable: true
+            attach_policy: "example_policy"
+        state: deleted
+
+    - name: "#1 Assert that correct set of commands were generated"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "{{ deleted['commands1'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Delete provided ios_l2vpn_evpn configuration (idempotent)
+      register: result
+      cisco.ios.ios_vlan_configuration: *id001
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Delete provided ios_vlan_configuration configuration
+      register: result
+      cisco.ios.ios_vlan_configuration:
+        config:
+        - vlan: "11"
+        state: deleted
+
+    - name: "#2 Assert that correct set of commands were generated"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "{{ deleted['commands2'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Delete provided ios_vlan_configuration configuration
+      register: result
+      cisco.ios.ios_vlan_configuration:
+        config:
+        - vlan: "12"
+          member:
+            evpn:
+              instance: "354"
+              vni: "500100"
+          ipv6:
+            destination_guard:
+              enable: true
+            dhcp:
+              guard:
+                enable: true
+              ldra_attach_policy: "client-facing-untrusted"
+            nd:
+              ra_throttler:
+                enable: true
+              raguard:
+                enable: true
+              suppress:
+                enable: true
+                attach_policy: "NDSUPP_POLICY"
+        state: deleted
+
+    - name: "#3 Assert that correct set of commands were generated"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "{{ deleted['commands3'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

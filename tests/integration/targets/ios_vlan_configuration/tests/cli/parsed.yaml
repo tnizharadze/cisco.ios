@@ -1,0 +1,22 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vlan_configuration parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse the commands for provided configuration
+  register: result
+  cisco.ios.ios_vlan_configuration:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- name: Convert configuration to dictionary
+  ansible.builtin.include_tasks: "{{ role_path }}/tests/cli/_convert_to_dict.yaml"
+  vars:
+    var_list:
+      - "{{ gathered['config'] }}"
+      - "{{ result['parsed'] }}"
+
+- name: Assert that gathered dict is correctly generated
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - convert_dict['results'][0]['ansible_facts']['dict_res'] == convert_dict['results'][1]['ansible_facts']['dict_res'] 

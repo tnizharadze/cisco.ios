@@ -1,0 +1,49 @@
+---
+- set_fact:
+    dict_res: |-
+      {
+      {% for each_vlan in item %}
+      "{{ each_vlan.vlan }}": {
+        {% for k, val in each_vlan.items() %}
+          "{{ k }}":
+          {% if k == "member" %}
+          {
+            {% for m, each_member in val.items() %}
+              "{{ m }}":
+              {% if m == "pseudowire" %}
+              {
+                {% for member_item in each_member %}
+                "{{ member_item.pwnumber }}": {{ member_item }},
+                {% endfor %}
+              }
+              {% elif m == "ip_peer" %}
+              {
+                {% for member_item in each_member %}
+                "{{ member_item.address ~ '_' ~ member_item.vc_id }}": {{ member_item }},
+                {% endfor %}
+              }
+              {% else %}
+                {% if each_member is string %}
+                  "{{ each_member }}"
+                {% else %}
+                   {{ each_member }}
+                {% endif %}
+              {% endif %}
+              ,
+            {% endfor %}
+          }
+          {% else %}
+            {% if val is string %}
+              "{{ val }}"
+            {% else %}
+              {{ val }}
+            {% endif %}
+          {% endif %}
+          ,
+        {% endfor %}
+      },
+      {% endfor %}
+      }
+  loop: "{{ var_list }}"
+  register: convert_dict
+  

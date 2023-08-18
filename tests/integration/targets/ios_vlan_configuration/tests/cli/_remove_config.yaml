@@ -1,0 +1,24 @@
+---
+- name: Remove all ios_vlan_configuration configuration
+  cisco.ios.ios_vlan_configuration:
+    state: deleted
+
+- name: Remove depended configuraion
+  ignore_errors: true
+  cisco.ios.ios_config:
+    lines: "{{ item }}"
+  with_items:
+    - no et-analytics
+    - no mdns-sd service-policy MDNS_POLICY
+    - no ipv6 nd ra-throttler policy NDRA_POLICY
+    - no ipv6 nd suppress policy NDSUPP_POLICY
+    - no ipv6 dhcp guard policy DHCP_POLICY
+    - no ipv6 nd raguard policy NDGUARD_POLICY
+    - no vlan 10-13
+    - no l2vpn vfi context OVERLAY
+    - no l2vpn vfi context VPLSVFI
+    - no l2 router-id 192.168.1.100
+    - no device-tracking policy example_policy
+    - no ipv6 destination-guard policy DGUARD_POLICY
+    - no mdns-sd gateway
+    - no ipv6 dhcp-ldra enable
