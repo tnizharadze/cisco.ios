@@ -71,6 +71,7 @@ class TerminalModule(TerminalBase):
         re.compile(rb"Please config flow-export destination ip address", re.I),
         re.compile(rb"% Policy \S+ not defined for the feature", re.I),
         re.compile(rb"% VPN id \S+ already in use", re.I),
+        re.compile(rb"% DHCPv6 LDRA must be globally enabled", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")

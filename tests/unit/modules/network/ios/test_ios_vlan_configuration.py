@@ -110,21 +110,21 @@ class TestIosVLANCONFIGModule(TestIosModule):
                     "vni": "6060",
                     "pseudowire": [
                         {"pwnumber": "100"},
-                        {"pwnumber": "35","address": "2.2.3.3","vc_id": "123"},
-                        {"pwnumber": "34","address": "23.23.23.23","vc_id": "123"},
-                        {"pwnumber": "23542","address": "5.5.5.5","vc_id": "342","template": "BFD"},
+                        {"pwnumber": "35", "address": "2.2.3.3", "vc_id": "123"},
+                        {"pwnumber": "34", "address": "23.23.23.23", "vc_id": "123"},
+                        {"pwnumber": "23542", "address": "5.5.5.5", "vc_id": "342", "template": "BFD"},
                         {"pwnumber": "23423"},
                     ],
                     "ip_peer": [
                         {"address": "10.10.10.10", "vc_id": "123"},
                         {"address": "3.4.5.6", "vc_id": "123"},
-                        {"address": "5.3.2.1","vc_id": "123","template": "DVFR"},
-                        {"address": "5.5.5.5","vc_id": "444","template": "sdsd"},
-                        {"address": "5.5.5.5","vc_id": "123"},
-                        {"address": "4.4.4.4","vc_id": "123","template": "RR"},
-                        {"address": "4.4.4.4","vc_id": "345"},
-                        {"address": "4.4.4.4","vc_id": "14342","template": "TEST"},
-                        {"address": "4.4.4.4","vc_id": "423"},
+                        {"address": "5.3.2.1", "vc_id": "123", "template": "DVFR"},
+                        {"address": "5.5.5.5", "vc_id": "444", "template": "sdsd"},
+                        {"address": "5.5.5.5", "vc_id": "123"},
+                        {"address": "4.4.4.4", "vc_id": "123", "template": "RR"},
+                        {"address": "4.4.4.4", "vc_id": "345"},
+                        {"address": "4.4.4.4", "vc_id": "14342", "template": "TEST"},
+                        {"address": "4.4.4.4", "vc_id": "423"},
                     ],
                 },
                 "mdns_sd_gateway": {
@@ -148,7 +148,7 @@ class TestIosVLANCONFIGModule(TestIosModule):
                     "vfi": "VPLSVFI",
                     "pseudowire": [
                         {"pwnumber": "36"},
-                        {"pwnumber": "101","address": "4.5.6.7","vc_id": "333","template": "TETE"},
+                        {"pwnumber": "101", "address": "4.5.6.7", "vc_id": "333", "template": "TETE"},
                     ],
                 },
                 "et_analytics_enable": True,
@@ -157,7 +157,7 @@ class TestIosVLANCONFIGModule(TestIosModule):
                         "enable": True,
                     },
                     "dhcp": {
-                        "guard": {"enable": True,"attach_policy": "TEST2"},
+                        "guard": {"enable": True, "attach_policy": "TEST2"},
                     },
                     "nd": {
                         "ra_throttler": {"enable": True},
@@ -210,17 +210,17 @@ class TestIosVLANCONFIGModule(TestIosModule):
                             "vni": "6060",
                             "pseudowire": [
                                 {"pwnumber": "100"},
-                                {"pwnumber": "35","address": "2.2.3.3","vc_id": "123"},
-                                {"pwnumber": "34","address": "23.23.23.23","vc_id": "123"},
-                                {"pwnumber": "23542","address": "5.5.5.5","vc_id": "342","template": "BFD"},
+                                {"pwnumber": "35", "address": "2.2.3.3", "vc_id": "123"},
+                                {"pwnumber": "34", "address": "23.23.23.23", "vc_id": "123"},
+                                {"pwnumber": "23542", "address": "5.5.5.5", "vc_id": "342", "template": "BFD"},
                                 {"pwnumber": "23423"},
                             ],
                             "ip_peer": [
                                 {"address": "10.10.10.10", "vc_id": "123"},
                                 {"address": "3.4.5.6", "vc_id": "123"},
-                                {"address": "5.3.2.1","template": "DVFR","vc_id": "123"},
-                                {"address": "5.5.5.5","template": "sdsd","vc_id": "123"},
-                                {"address": "4.4.4.4","template": "TEST","vc_id": "423"},
+                                {"address": "5.3.2.1", "template": "DVFR", "vc_id": "123"},
+                                {"address": "5.5.5.5", "template": "sdsd", "vc_id": "123"},
+                                {"address": "4.4.4.4", "template": "TEST", "vc_id": "423"},
                             ],
                         },
                         "mdns_sd_gateway": {
@@ -244,7 +244,7 @@ class TestIosVLANCONFIGModule(TestIosModule):
                             "vfi": "VPLSVFI",
                             "pseudowire": [
                                 {"pwnumber": "36"},
-                                {"pwnumber": "101","address": "4.5.6.7","vc_id": "333","template": "TETE"},
+                                {"pwnumber": "101", "address": "4.5.6.7", "vc_id": "333", "template": "TETE"},
                             ],
                         },
                         "et_analytics_enable": True,
@@ -253,7 +253,7 @@ class TestIosVLANCONFIGModule(TestIosModule):
                                 "enable": True,
                             },
                             "dhcp": {
-                                "guard": {"enable": True,"attach_policy": "TEST2"},
+                                "guard": {"enable": True, "attach_policy": "TEST2"},
                             },
                             "nd": {
                                 "ra_throttler": {"enable": True},
@@ -401,34 +401,28 @@ class TestIosVLANCONFIGModule(TestIosModule):
                     {
                         "vlan": "10",
                         "member": {
-#                            "access_vfi": "OVERLAY",
                             "vni": "6060",
                             "pseudowire": [
                                 {"pwnumber": "100"},
-                                {"pwnumber": "35","address": "2.2.3.3","vc_id": "123"},
-                                {"pwnumber": "34","address": "23.23.23.23","vc_id": "123"},
-                                {"pwnumber": "23542","address": "5.5.5.5","vc_id": "342","template": "BFD"},
-#                                {"pwnumber": "23423"},
+                                {"pwnumber": "35", "address": "2.2.3.3", "vc_id": "123"},
+                                {"pwnumber": "34", "address": "23.23.23.23", "vc_id": "123"},
+                                {"pwnumber": "23542", "address": "5.5.5.5", "vc_id": "342", "template": "BFD"},
                             ],
                             "ip_peer": [
                                 {"address": "10.10.10.10", "vc_id": "123"},
                                 {"address": "3.4.5.6", "vc_id": "123"},
-                                {"address": "5.3.2.1","template": "DVFR","vc_id": "123"},
-                                {"address": "5.5.5.5","template": "sdsd","vc_id": "123"},
-                                {"address": "4.4.4.4","vc_id": "123","template": "RR"},
-#                                {"address": "4.4.4.4","vc_id": "345"},
-#                                {"address": "4.4.4.4","vc_id": "14342","template": "TEST"},
-                                {"address": "4.4.4.4","vc_id": "423"},
+                                {"address": "5.3.2.1", "template": "DVFR", "vc_id": "123"},
+                                {"address": "5.5.5.5", "template": "sdsd", "vc_id": "123"},
+                                {"address": "4.4.4.4", "vc_id": "123", "template": "RR"},
+                                {"address": "4.4.4.4", "vc_id": "423"},
                             ],
                         },
                         "mdns_sd_gateway": {
                             "enable": True,
                             "active_query_timer": "44",
                             "sdg_agent": "6.6.6.6",
-#                            "service_inst_suffix": "TEST2",
                             "service_mdns_query": "ptr",
                             "service_policy": "TEST_POL",
-#                            "source_interface": "GigabitEthernet1/0/1",
                             "transport": "both",
                         },
                         "device_tracking": {
@@ -493,7 +487,6 @@ class TestIosVLANCONFIGModule(TestIosModule):
             "no vlan configuration 12",
         ]
         result = self.execute_module(changed=True)
-        #raise Exception(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_vlan_configuration_replaced_idempotent(self):
@@ -556,21 +549,19 @@ class TestIosVLANCONFIGModule(TestIosModule):
                             "vni": "6060",
                             "pseudowire": [
                                 {"pwnumber": "100"},
-#                                {"pwnumber": "35","address": "2.2.3.3","vc_id": "123"},
-                                {"pwnumber": "34","address": "23.23.23.23","vc_id": "123"},
-                                {"pwnumber": "23542","address": "5.5.5.5","vc_id": "342","template": "BFD"},
-                                {"pwnumber": "23423","address": "2.2.3.3","vc_id": "123","template": "BFD"},
+                                {"pwnumber": "34", "address": "23.23.23.23", "vc_id": "123"},
+                                {"pwnumber": "23542", "address": "5.5.5.5", "vc_id": "342", "template": "BFD"},
+                                {"pwnumber": "23423", "address": "2.2.3.3", "vc_id": "123", "template": "BFD"},
                             ],
                             "ip_peer": [
                                 {"address": "10.10.10.10", "vc_id": "123"},
                                 {"address": "3.4.5.6", "vc_id": "123"},
-                                {"address": "5.3.2.1","vc_id": "123"},
-                                {"address": "5.5.5.5","vc_id": "123","template": "sdsd"},
-                                #{"address": "5.5.5.5","vc_id": "123"},
-                                {"address": "4.4.4.4","vc_id": "123","template": "RR"},
-                                {"address": "4.4.4.4","vc_id": "345"},
-                                {"address": "4.4.4.4","vc_id": "14342","template": "TEST"},
-                                {"address": "4.4.4.4","vc_id": "423","template": "TEST"},
+                                {"address": "5.3.2.1", "vc_id": "123"},
+                                {"address": "5.5.5.5", "vc_id": "123", "template": "sdsd"},
+                                {"address": "4.4.4.4", "vc_id": "123", "template": "RR"},
+                                {"address": "4.4.4.4", "vc_id": "345"},
+                                {"address": "4.4.4.4", "vc_id": "14342", "template": "TEST"},
+                                {"address": "4.4.4.4", "vc_id": "423", "template": "TEST"},
                             ],
                         },
                         "mdns_sd_gateway": {
@@ -581,7 +572,6 @@ class TestIosVLANCONFIGModule(TestIosModule):
                             "service_mdns_query": "ptr",
                             "service_policy": "TEST_POL",
                             "source_interface": "GigabitEthernet1/0/1",
-                            #"transport": "both",
                         },
                         "device_tracking": {
                             "enable": False,
@@ -594,7 +584,7 @@ class TestIosVLANCONFIGModule(TestIosModule):
                             "vfi": "VPLSVFI",
                             "pseudowire": [
                                 {"pwnumber": "36"},
-                                {"pwnumber": "101","address": "4.5.6.7","vc_id": "333","template": "TETE"},
+                                {"pwnumber": "101", "address": "4.5.6.7", "vc_id": "333", "template": "TETE"},
                             ],
                         },
                         "et_analytics_enable": True,
@@ -663,7 +653,7 @@ class TestIosVLANCONFIGModule(TestIosModule):
             "vlan configuration 11",
             "no ipv6 nd raguard attach-policy TEST",
             "no ipv6 destination-guard",
-            "no ipv6 dhcp guard attach-policy TEST",
+            "no ipv6 dhcp guard attach-policy TEST2",
             "ipv6 nd ra-throttler attach-policy TEST4",
             "exit",
             "vlan configuration 12",
@@ -730,21 +720,21 @@ class TestIosVLANCONFIGModule(TestIosModule):
                             "vni": "6060",
                             "pseudowire": [
                                 {"pwnumber": "100"},
-                                {"pwnumber": "35","address": "2.2.3.3","vc_id": "123"},
-                                {"pwnumber": "34","address": "23.23.23.23","vc_id": "123"},
-                                {"pwnumber": "23542","address": "5.5.5.5","vc_id": "342","template": "BFD"},
+                                {"pwnumber": "35", "address": "2.2.3.3", "vc_id": "123"},
+                                {"pwnumber": "34", "address": "23.23.23.23", "vc_id": "123"},
+                                {"pwnumber": "23542", "address": "5.5.5.5", "vc_id": "342", "template": "BFD"},
                                 {"pwnumber": "23423"},
                             ],
                             "ip_peer": [
                                 {"address": "10.10.10.10", "vc_id": "123"},
                                 {"address": "3.4.5.6", "vc_id": "123"},
-                                {"address": "5.3.2.1","vc_id": "123","template": "DVFR"},
-                                {"address": "5.5.5.5","vc_id": "444","template": "TEST3"},
-                                {"address": "5.5.5.5","vc_id": "123"},
-                                {"address": "4.4.4.4","vc_id": "123","template": "RR"},
-                                {"address": "4.4.4.4","vc_id": "345"},
-                                {"address": "4.4.4.4","vc_id": "14342","template": "TEST"},
-                                {"address": "4.4.4.4","vc_id": "423"},
+                                {"address": "5.3.2.1", "vc_id": "123", "template": "DVFR"},
+                                {"address": "5.5.5.5", "vc_id": "444", "template": "TEST3"},
+                                {"address": "5.5.5.5", "vc_id": "123"},
+                                {"address": "4.4.4.4", "vc_id": "123", "template": "RR"},
+                                {"address": "4.4.4.4", "vc_id": "345"},
+                                {"address": "4.4.4.4", "vc_id": "14342", "template": "TEST"},
+                                {"address": "4.4.4.4", "vc_id": "423"},
                             ],
                         },
                         "device_tracking": {
@@ -757,7 +747,7 @@ class TestIosVLANCONFIGModule(TestIosModule):
                             "vfi": "VPLSVFI",
                             "pseudowire": [
                                 {"pwnumber": "36"},
-                                {"pwnumber": "101","address": "4.5.6.7","vc_id": "333","template": "TETE"},
+                                {"pwnumber": "101", "address": "4.5.6.7", "vc_id": "333", "template": "TETE"},
                             ],
                         },
                         "et_analytics_enable": True,
@@ -766,7 +756,7 @@ class TestIosVLANCONFIGModule(TestIosModule):
                                 "enable": False,
                             },
                             "dhcp": {
-                                "guard": {"enable": True,"attach_policy": "TEST2"},
+                                "guard": {"enable": True, "attach_policy": "TEST2"},
                             },
                             "nd": {
                                 "ra_throttler": {"enable": True},
@@ -887,21 +877,21 @@ class TestIosVLANCONFIGModule(TestIosModule):
                     "vni": "6060",
                     "pseudowire": [
                         {"pwnumber": "100"},
-                        {"pwnumber": "35","address": "2.2.3.3","vc_id": "123"},
-                        {"pwnumber": "34","address": "23.23.23.23","vc_id": "123"},
-                        {"pwnumber": "23542","address": "5.5.5.5","vc_id": "342","template": "BFD"},
+                        {"pwnumber": "35", "address": "2.2.3.3", "vc_id": "123"},
+                        {"pwnumber": "34", "address": "23.23.23.23", "vc_id": "123"},
+                        {"pwnumber": "23542", "address": "5.5.5.5", "vc_id": "342", "template": "BFD"},
                         {"pwnumber": "23423"},
                     ],
                     "ip_peer": [
                         {"address": "10.10.10.10", "vc_id": "123"},
                         {"address": "3.4.5.6", "vc_id": "123"},
-                        {"address": "5.3.2.1","vc_id": "123","template": "DVFR"},
-                        {"address": "5.5.5.5","vc_id": "444","template": "sdsd"},
-                        {"address": "5.5.5.5","vc_id": "123"},
-                        {"address": "4.4.4.4","vc_id": "123","template": "RR"},
-                        {"address": "4.4.4.4","vc_id": "345"},
-                        {"address": "4.4.4.4","vc_id": "14342","template": "TEST"},
-                        {"address": "4.4.4.4","vc_id": "423"},
+                        {"address": "5.3.2.1", "vc_id": "123", "template": "DVFR"},
+                        {"address": "5.5.5.5", "vc_id": "444", "template": "sdsd"},
+                        {"address": "5.5.5.5", "vc_id": "123"},
+                        {"address": "4.4.4.4", "vc_id": "123", "template": "RR"},
+                        {"address": "4.4.4.4", "vc_id": "345"},
+                        {"address": "4.4.4.4", "vc_id": "14342", "template": "TEST"},
+                        {"address": "4.4.4.4", "vc_id": "423"},
                     ],
                 },
                 "mdns_sd_gateway": {
@@ -925,7 +915,7 @@ class TestIosVLANCONFIGModule(TestIosModule):
                     "vfi": "VPLSVFI",
                     "pseudowire": [
                         {"pwnumber": "36"},
-                        {"pwnumber": "101","address": "4.5.6.7","vc_id": "333","template": "TETE"},
+                        {"pwnumber": "101", "address": "4.5.6.7", "vc_id": "333", "template": "TETE"},
                     ],
                 },
                 "et_analytics_enable": True,
@@ -934,7 +924,7 @@ class TestIosVLANCONFIGModule(TestIosModule):
                         "enable": True,
                     },
                     "dhcp": {
-                        "guard": {"enable": True,"attach_policy": "TEST2"},
+                        "guard": {"enable": True, "attach_policy": "TEST2"},
                     },
                     "nd": {
                         "ra_throttler": {"enable": True},

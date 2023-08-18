@@ -61,11 +61,11 @@ class Vlan_configuration(ResourceModule):
             "member.vfi",
             "member.access_vfi",
             "member.vni",
-            "member.evpn",
             "ipv6.dhcp.ldra_attach_policy",
             "et_analytics_enable",
         ]
-        self.dual_parsers = [
+        self.multivar_parsers = [
+            "member.evpn",
             "device_tracking",
             "ipv6.destination_guard",
             "ipv6.dhcp.guard",
@@ -127,8 +127,9 @@ class Vlan_configuration(ResourceModule):
             if wx is None:
                 continue
             dp = False
-            for i in self.dual_parsers:
-                if i in dstr: dp = True
+            for i in self.multivar_parsers:
+                if i in dstr:
+                    dp = True
             if dp and wx == hx:
                 hrec.update({k: hx})
             elif dp:
@@ -153,7 +154,7 @@ class Vlan_configuration(ResourceModule):
                 hx = get_from_dict(have, x) or {}
                 self._compare_dict({}, hx, x)
             self.compare(parsers=self.linear_parsers, want={}, have=have)
-            self._compare_dual({}, have)
+            self._compare_multivar({}, have)
             want = {}
             if "mdns_sd_gateway" in have and len(have["mdns_sd_gateway"]) > 1:
                 have["mdns_sd_gateway"].pop("enable")
@@ -175,21 +176,27 @@ class Vlan_configuration(ResourceModule):
                 wx = get_from_dict(want, x) or {}
                 hx = get_from_dict(have, x) or {}
                 self._compare_dict(wx, hx, x)
-            self._compare_dual(want, have)
+            self._compare_multivar(want, have)
             self._compare_mdns(want, have)
             if len(self.commands) != begin:
                 self.commands.insert(begin, self._tmplt.render(want, "vlan", False))
                 self.commands.append("exit")
 
-    def _compare_dual(self, want, have):
-        for x in self.dual_parsers:
+    def _compare_multivar(self, want, have):
+        for x in self.multivar_parsers:
             wx = get_from_dict(want, x) or {}
             hx = get_from_dict(have, x) or {}
-            if wx == hx: continue
-            if wx and wx["enable"]:
-                self.compare(parsers=[x+".enable"], want=want, have={})
+            if wx == hx:
+                continue
+            if wx and "enable" in wx:
+                if wx["enable"]:
+                    self.compare(parsers=[x + ".enable"], want=want, have={})
+                else:
+                    self.compare(parsers=[x + ".enable"], want={}, have=have)
+            elif hx and "enable" in hx:
+                self.compare(parsers=[x + ".enable"], want={}, have=have)
             else:
-                self.compare(parsers=[x+".enable"], want=want, have=have)
+                self.compare(parsers=[x], want=want, have=have)
 
     def _compare_mdns(self, want, have):
         mdns_len = len(self.commands)
@@ -202,14 +209,14 @@ class Vlan_configuration(ResourceModule):
                     self.commands.insert(mdns_len, self._tmplt.render(want, "mdns_sd_gateway.enable", False))
                     self.commands.append("exit")
         elif "mdns_sd_gateway" in want and want["mdns_sd_gateway"]["enable"]:
-                self.compare(parsers=self.mdns_parsers, want=want, have=have)
-                self.commands.append("exit")
+            self.compare(parsers=self.mdns_parsers, want=want, have=have)
+            self.commands.append("exit")
 
     def _compare_dict(self, want, have, x):
         have_remove = list(set(have.keys()).difference(set(want.keys())))
         for each in have_remove:
-           hx_comp = self._construct_dict(x, have[each])
-           self.compare(parsers=[x], want={}, have=hx_comp)
+            hx_comp = self._construct_dict(x, have[each])
+            self.compare(parsers=[x], want={}, have=hx_comp)
         for wk, wx in iteritems(want):
             hx = get_from_dict(have, wk) or {}
             wx_comp = self._construct_dict(x, wx)
@@ -218,20 +225,21 @@ class Vlan_configuration(ResourceModule):
 
     def _construct_dict(self, vector, value):
         keys = vector.split(".")
-        res = {}; a = res
+        res = {}
+        a = res
         for key in keys:
-            a.update({key:{}})
+            a.update({key: {}})
             a = a.get(key)
         a.update(value)
         return res
 
     def _list_to_dict(self, entry):
-        for x in entry: # vlan config
-            for k, val in iteritems(x): # member in k
+        for x in entry:  # vlan config
+            for k, val in iteritems(x):  # member in k
                 if k == "member":
                     if "pseudowire" in val and isinstance(val["pseudowire"], list):
                         val["pseudowire"] = {i["pwnumber"]: i for i in val["pseudowire"]}
                     if "ip_peer" in val and isinstance(val["ip_peer"], list):
-                        val["ip_peer"] = {(i["address"]+"_"+i["vc_id"]).replace(".","_"): i for i in val["ip_peer"]}
+                        val["ip_peer"] = {(i["address"] + "_" + i["vc_id"]).replace(".", "_"): i for i in val["ip_peer"]}
         entry = {x["vlan"]: x for x in entry}
         return entry

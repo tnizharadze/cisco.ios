@@ -62,7 +62,6 @@ gathered:
             address: "4.5.6.7"
             vc_id: "333"
             template: "TETE"
-      et_analytics_enable: true
       ipv6:
         destination_guard:
           enable: true
@@ -89,7 +88,7 @@ gathered:
       ipv6:
         destination_guard:
           enable: true
-          attach_policy: "TEST"
+          attach_policy: "DGUARD_POLICY"
         dhcp:
           guard:
             enable: true
@@ -137,7 +136,6 @@ rendered:
     - "member vfi VPLSVFI"
     - "member pseudowire36"
     - "member pseudowire101 4.5.6.7 333 template TETE"
-    - "et-analytics enable"
     - "ipv6 destination-guard"
     - "ipv6 dhcp guard attach-policy DHCP_POLICY"
     - "ipv6 nd ra-throttler"
@@ -148,7 +146,7 @@ rendered:
     - "member evpn-instance 354 vni 500100 protected"
     - "mdns-sd gateway"
     - "exit"
-    - "ipv6 destination-guard attach-policy TEST"
+    - "ipv6 destination-guard attach-policy DGUARD_POLICY"
     - "ipv6 dhcp ldra attach-policy client-facing-untrusted"
     - "ipv6 dhcp guard"
     - "ipv6 nd ra-throttler attach-policy NDRA_POLICY"
@@ -157,97 +155,266 @@ rendered:
     - "exit"
 merged:
   commands:
-    - "l2vpn evpn instance 128 vlan-based"
-    - "route-target import 4343:444"
-    - "route-target import 4343:555"
-    - "route-target export 4343:444"
-    - "route-target export 4343:555"
-    - "ip local-learning disable"
-    - "default-gateway advertise enable"
-    - "multicast advertise disable"
-    - "re-originate route-type5"
+    - "vlan configuration 13"
+    - "member access-vfi OVERLAY2"
+    - "member vni 6065"
+    - "member pseudowire135 2.3.1.3 143 encapsulation mpls"
+    - "member 4.14.24.34 3233 template RR"
+    - "device-tracking attach-policy example_policy"
+    - "ipv6 destination-guard attach-policy DGUARD_POLICY"
+    - "ipv6 dhcp guard"
+    - "ipv6 dhcp ldra attach-policy client-facing-untrusted"
+    - "ipv6 nd ra-throttler attach-policy NDRA_POLICY"
+    - "ipv6 nd raguard"
+    - "ipv6 nd suppress attach-policy NDSUPP_POLICY"
+    - "mdns-sd gateway"
+    - "active-query timer 24"
+    - "transport both"
+    - "service-inst-suffix TEST2"
+    - "service-mdns-query ptr"
+    - "source-interface GigabitEthernet1/0/1"
+    - "sdg-agent 6.2.3.6"
+    - "service-policy MDNS_POLICY"
+    - "exit"
     - "exit"
   after:
-    - instance: "124"
-      auto_route_target: false
-      default_gateway_advertise: "enable"
-      encapsulation: "vxlan"
-      ip_local_learning: "disable"
-      multicast_advertise: "disable"
-      rd: "65374:103"
-      re_originate_route_type5: true
-      replication_type: "ingress"
-      route_target_import:
-        - "333:444"
-        - "444:555"
-      route_target_export:
-        - "333:444"
-        - "444:555"
-    - instance: "126"
-      auto_route_target: true
-      default_gateway_advertise: "disable"
-      encapsulation: "vxlan"
-      ip_local_learning: "enable"
-      multicast_advertise: "enable"
-      rd: "65500:200"
-      replication_type: "static"
-      route_target_import:
-        - "444:555"
-        - "666:111"
-      route_target_export:
-        - "444:555"
-        - "666:111"
-    - instance: "128"
-      encapsulation: "vxlan"
-      rd: "65500:201"
-      replication_type: "ingress"
-      auto_route_target: true
-      default_gateway_advertise: "enable"
-      ip_local_learning: "disable"
-      multicast_advertise: "disable"
-      re_originate_route_type5: true
-      route_target_import:
-        - "4343:444"
-        - "4343:555"
-      route_target_export:
-        - "4343:444"
-        - "4343:555"
+    - vlan: "10"
+      member:
+        access_vfi: "OVERLAY"
+        vni: "6060"
+        pseudowire:
+          - pwnumber: "100"
+          - pwnumber: "35"
+            address: "2.2.3.3"
+            vc_id: "123"
+          - pwnumber: "34"
+            address: "23.23.23.23"
+            vc_id: "123"
+          - pwnumber: "23542"
+            address: "5.5.5.5"
+            vc_id: "342"
+            template: "BFD"
+          - pwnumber: "23423"
+        ip_peer:
+          - address: "10.10.10.10"
+            vc_id: "123"
+          - address: "3.4.5.6"
+            vc_id: "123"
+          - address: "5.3.2.1"
+            vc_id: "123"
+            template: "DVFR"
+          - address: "5.5.5.5"
+            vc_id: "444"
+            template: sdsd
+          - address: "5.5.5.5"
+            vc_id: "123"
+          - address: "4.4.4.4"
+            vc_id: "123"
+            template: "RR"
+          - address: "4.4.4.4"
+            vc_id: "345"
+          - address: "4.4.4.4"
+            vc_id: "14342"
+            template: "TEST"
+          - address: "4.4.4.4"
+            vc_id: "423"
+      mdns_sd_gateway:
+        enable: true
+        active_query_timer: "44"
+        sdg_agent: "6.6.6.6"
+        service_inst_suffix: "TEST2"
+        service_mdns_query: "ptr"
+        service_policy: "MDNS_POLICY"
+        source_interface: "GigabitEthernet1/0/1"
+        transport: "both"
+      device_tracking:
+        enable: true
+        attach_policy: "example_policy"
+    - vlan: "11"
+      member:
+        vfi: "VPLSVFI"
+        pseudowire:
+          - pwnumber: "36"
+          - pwnumber: "101"
+            address: "4.5.6.7"
+            vc_id: "333"
+            template: "TETE"
+      ipv6:
+        destination_guard:
+          enable: true
+        dhcp:
+          guard:
+            enable: true
+            attach_policy: "DHCP_POLICY"
+        nd:
+          ra_throttler:
+            enable: true
+          raguard:
+            enable: true
+            attach_policy: "NDGUARD_POLICY"
+          suppress:
+            enable: true
+    - vlan: "12"
+      member:
+        evpn:
+          instance: "354"
+          vni: "500100"
+          protected: true
+      mdns_sd_gateway:
+        enable: true
+      ipv6:
+        destination_guard:
+          enable: true
+          attach_policy: "DGUARD_POLICY"
+        dhcp:
+          guard:
+            enable: true
+          ldra_attach_policy: "client-facing-untrusted"
+        nd:
+          ra_throttler:
+            enable: true
+            attach_policy: "NDRA_POLICY"
+          raguard:
+            enable: true
+          suppress:
+            enable: true
+            attach_policy: "NDSUPP_POLICY"
+    - vlan: "13"
+      member:
+        access_vfi: "OVERLAY2"
+        vni: "6065"
+        pseudowire:
+          - pwnumber: "135"
+            address: "2.3.1.3"
+            vc_id: "143"
+        ip_peer:
+          - address: "4.14.24.34"
+            vc_id: "3233"
+            template: "RR"
+      mdns_sd_gateway:
+        enable: true
+        active_query_timer: "24"
+        sdg_agent: "6.2.3.6"
+        service_inst_suffix: "TEST2"
+        service_mdns_query: "ptr"
+        service_policy: "MDNS_POLICY"
+        source_interface: "GigabitEthernet1/0/1"
+        transport: "both"
+      device_tracking:
+        enable: true
+        attach_policy: "example_policy"
+      ipv6:
+        destination_guard:
+          enable: true
+          attach_policy: "DGUARD_POLICY"
+        dhcp:
+          guard:
+            enable: true
+          ldra_attach_policy: "client-facing-untrusted"
+        nd:
+          ra_throttler:
+            enable: true
+            attach_policy: "NDRA_POLICY"
+          raguard:
+            enable: true
+          suppress:
+            enable: true
+            attach_policy: "NDSUPP_POLICY"
 replaced:
   commands:
-    - "no l2vpn evpn instance 124 vlan-based"
-    - "l2vpn evpn instance 126 vlan-based"
-    - "no route-target import 666:111"
-    - "no route-target export 666:111"
-    - "no rd 65500:200"
-    - "replication-type ingress"
-    - "no ip local-learning enable"
-    - "no default-gateway advertise disable"
-    - "no multicast advertise enable"
+    - "vlan configuration 10"
+    - "member vni 6161"
+    - "no member pseudowire35 2.2.3.3 123 encapsulation mpls"
+    - "no member pseudowire34 23.23.23.23 123 encapsulation mpls"
+    - "member pseudowire23542 5.5.5.5 342 encapsulation mpls"
+    - "no member 5.3.2.1 123 template DVFR"
+    - "no member 10.10.10.10 123 encapsulation mpls"
+    - "no member 3.4.5.6 123 encapsulation mpls"
+    - "member 4.4.4.4 14342 encapsulation mpls"
+    - "no device-tracking attach-policy example_policy"
+    - "no mdns-sd gateway"
     - "exit"
-    - "l2vpn evpn instance 128 vlan-based"
-    - "route-target import 123:555"
-    - "route-target export 123:555"
-    - "no auto-route-target"
+    - "vlan configuration 11"
+    - "no member pseudowire36"
+    - "no member pseudowire101 4.5.6.7 333 template TETE"
+    - "ipv6 dhcp guard"
+    - "ipv6 nd raguard"
+    - "no ipv6 nd suppress"
+    - "exit"
+    - "vlan configuration 12"
+    - "no ipv6 dhcp ldra attach-policy client-facing-untrusted"
+    - "member evpn-instance 354 vni 500100"
+    - "no ipv6 destination-guard attach-policy DGUARD_POLICY"
+    - "no ipv6 nd suppress attach-policy NDSUPP_POLICY"
     - "exit"
   after:
-    - auto_route_target: true
-      encapsulation: "vxlan"
-      instance: "126"
-      replication_type: "ingress"
-      route_target_export:
-        - "444:555"
-      route_target_import:
-        - "444:555"
-    - auto_route_target: false
-      encapsulation: "vxlan"
-      instance: "128"
-      rd: "65500:201"
-      replication_type: "ingress"
-      route_target_export:
-        - "123:555"
-      route_target_import:
-        - "123:555"
+    - vlan: "10"
+      member:
+        vni: "6161"
+        access_vfi: "OVERLAY"
+        ip_peer:
+          - address: "4.4.4.4"
+            vc_id: "423"
+          - address: "4.4.4.4"
+            vc_id: "14342"
+          - address: "4.4.4.4"
+            vc_id: "345"
+          - address: "4.4.4.4"
+            template: "RR"
+            vc_id: "123"
+          - address: "5.5.5.5"
+            vc_id: "123"
+          - address: "5.5.5.5"
+            template: "sdsd"
+            vc_id: "444"
+        pseudowire:
+          - pwnumber: "23423"
+          - address: "5.5.5.5"
+            pwnumber: "23542"
+            vc_id: "342"
+          - pwnumber: "100"
+    - vlan: "11"
+      ipv6:
+        destination_guard:
+          enable: true
+        dhcp:
+          guard:
+            enable: true
+        nd:
+          ra_throttler:
+            enable: true
+          raguard:
+            enable: true
+      member:
+        vfi: "VPLSVFI"
+    - vlan: "12"
+      ipv6:
+          dhcp:
+            guard:
+              enable: true
+          nd:
+            ra_throttler:
+              attach_policy: "NDRA_POLICY"
+              enable: true
+            raguard:
+              enable: true
+      mdns_sd_gateway:
+        enable: true
+      member:
+        evpn:
+          instance: "354"
+          vni: "500100"
+          protected: false
 deleted:
-  commands:
-    - "no l2vpn evpn instance 124 vlan-based"
-    - "no l2vpn evpn instance 126 vlan-based"
+  commands1:
+    - "no vlan configuration 10"
+  commands2:
+    - "no vlan configuration 11"
+  commands3:
+    - "vlan configuration 12"
+    - "no ipv6 dhcp ldra attach-policy client-facing-untrusted"
+    - "no ipv6 dhcp guard"
+    - "no ipv6 nd raguard"
+    - "no ipv6 nd suppress attach-policy NDSUPP_POLICY"
+    - "exit"
+  

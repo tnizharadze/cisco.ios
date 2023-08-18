@@ -41,7 +41,8 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                     "mutually_exclusive": [
                         ["vfi", "access_vfi"],
-                        ["vni","vfi","evpn"],
+                        ["vni", "evpn"],
+                        ["vfi", "evpn"],
                     ],
                     "options": {
                         "vfi": {"type": "str"},
@@ -74,7 +75,7 @@ class Vlan_configurationArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "instance": {"type": "str", "required": True},
                                 "vni": {"type": "str"},
-                                "protected": {"type": "bool"},
+                                "protected": {"type": "bool", "default": False},
                             },
                         },
                     },

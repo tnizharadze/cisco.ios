@@ -31,13 +31,13 @@ options:
       vlan:
         description:
           - "VLAN ID List Eg. 1-10,15"
-          - "Caution: for EVPN configuration use only one VLAN" 
+          - "Caution: for EVPN configuration use only one VLAN"
         type: str
         required: true
       member:
-        description: Member configuration 
+        description: Member configuration
         type: dict
-        mutually_exclusive: [["vfi", "access_vfi"],["vni","vfi","evpn"]]
+        mutually_exclusive: [["vfi", "access_vfi"], ["vni", "evpn"], [vfi", "evpn"]]
         suboptions:
           vfi:
             description: Virtual Forwarding Instance (VFI) member name
@@ -96,11 +96,12 @@ options:
               protected:
                 description: Enable local peer to peer blocking
                 type: bool
+                default: false
       mdns_sd_gateway:
         description: Enable mDNS config on vlan/interface
         type: dict
         suboptions:
-          enabled:
+          enable:
             description: Enable mDNS gateway on vlan/interface
             type: bool
             required: true

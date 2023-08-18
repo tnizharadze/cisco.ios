@@ -3,13 +3,17 @@
   cisco.ios.ios_config:
     lines:
       - ip routing
-      - vlan 10-12
+      - vlan 10-13
       - l2 router-id 192.168.1.100
       - ipv6 nd ra-throttler policy NDRA_POLICY
       - ipv6 nd suppress policy NDSUPP_POLICY
       - ipv6 dhcp guard policy DHCP_POLICY
       - ipv6 nd raguard policy NDGUARD_POLICY
       - mdns-sd service-policy MDNS_POLICY
+      - device-tracking policy example_policy
+      - ipv6 destination-guard policy DGUARD_POLICY
+      - mdns-sd gateway
+      - ipv6 dhcp-ldra enable
 
 - name: Apply base configuraion #2
   cisco.ios.ios_config:
@@ -19,6 +23,20 @@
       - l2vpn vfi context OVERLAY
 
 - name: Apply base configuraion #3
+  cisco.ios.ios_config:
+    lines:
+      - vpn id 100101
+    parents: 
+      - l2vpn vfi context VPLSVFI
+
+- name: Apply base configuraion #4
+  cisco.ios.ios_config:
+    lines:
+      - vpn id 100102
+    parents: 
+      - l2vpn vfi context OVERLAY2
+
+- name: Apply base configuraion #5
   cisco.ios.ios_config:
     lines:
       - ip flow-export destination 10.10.10.10 65535
